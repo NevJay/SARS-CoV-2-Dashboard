@@ -69,10 +69,20 @@ def process(path):
     df = pd.read_csv(path)
     #df.drop(['Passage details/history', 'Type^^location/state','Host','Originating lab','Submitting lab','Submitter'], axis=1, inplace=True)
     df = df.filter(['Gene name', 'Isolate name','YYYY-MM-DD','Isolate ID','Location','Sequence'])
+    df = df.dropna()
+    df = df.drop_duplicates()
+    df = df.reset_index(drop=True)
     pd.set_option('display.max_columns', None)
     print(df.head())
     list = df['Sequence'].tolist()
+    #print(list)
     sequence = df.iloc[:, 5:6].values
+    for idx, seq in enumerate(list):
+        #print(idx,seq)
+        for i in range(len(seq)):
+            if seq[i] == 'N':
+                df = df.drop([idx])
+                break
     list2 = []
     number = 0
     for j in range(len(list)):
@@ -89,7 +99,7 @@ def process(path):
         list2.append(number / 1000)
         number = 0
     df['DNAENC'] = list2
-    print(df.head())
+    print(df.tail())
     return df
 while True:
     event, values = window.read()
