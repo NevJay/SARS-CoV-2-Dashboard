@@ -48,7 +48,7 @@ def kMeans(df):
     plt.ylabel('DNAENC')
     # plt.show()
 
-    km = KMeans(n_clusters=4)
+    km = KMeans(n_clusters=3)
     y_predicted = km.fit_predict(df[['Gene name', 'DNAENC']])
     y_predicted
     df['cluster'] = y_predicted
@@ -77,12 +77,6 @@ def process(path):
     list = df['Sequence'].tolist()
     #print(list)
     sequence = df.iloc[:, 5:6].values
-    for idx, seq in enumerate(list):
-        #print(idx,seq)
-        for i in range(len(seq)):
-            if seq[i] == 'N':
-                df = df.drop([idx])
-                break
     list2 = []
     number = 0
     for j in range(len(list)):
@@ -95,9 +89,15 @@ def process(path):
                 number += 3 * i
             if list[j][i] == 'G':
                 number += 4 * i
+            if list[j][i] == 'N':
+                df = df.drop([j])
+                number = 0
+                break
         # number = str(number)
-        list2.append(number / 1000)
-        number = 0
+        if number != 0:
+            list2.append(number / 1000)
+            number = 0
+    print(len(list2))
     df['DNAENC'] = list2
     print(df.tail())
     return df
