@@ -10,6 +10,11 @@ from matplotlib import pyplot as plt
 from sklearn.preprocessing import LabelEncoder
 import ctypes
 import platform
+import seaborn as sns
+
+cov_mut=pd.read_csv('output1.csv',nrows=500)
+cov_mut.head()
+
 
 # ---------------- Front-End-Functions ----------------
 # Login Interface
@@ -19,8 +24,7 @@ def win_Login():
         Left_Column = [[sg.Text('Or Are you New User?'), sg.Text(' ' * 10)],
                        [sg.Text('Then'), sg.Button(' Sign Up ')]]
 
-        Right_Column = [[sg.Text(' ' * 13), sg.Button(' Forget Email? ')],
-                        [sg.Text(' ' * 13), sg.Button(' Forget Password? ')]]
+        Right_Column = [[sg.Text(' ' * 13), sg.Button(' Forget Email? ')]]
 
         layout = [[sg.Text('Email : '), sg.InputText(key='in1', do_not_clear=False)],
                   [sg.Text('Password : '), sg.InputText(key='in2', do_not_clear=False, password_char='*')],
@@ -88,15 +92,11 @@ def win_Login():
             return i
         elif (event == ' Sign Up '):
             window.close()
-            win_UserAvailable()
+            win_Signup()
             win_Login()
         elif (event == ' Forget Email? '):
             window.close()
             sec_ques_check()
-        elif (event == ' Forget Password? '):
-            window.close()
-            code, get_email = verify()
-            win_Verify(code, get_email)
         else:
             window.close()
             win_Login()
@@ -197,7 +197,8 @@ def win_Plots():
             # close the window.
             window.close()
         elif event == "DATA ANALYSIS":
-            sg.Popup('DATA ANALYSIS page')
+            window.close()
+            win_Analysis()
         elif event == "PREDICTED DATA":
             sg.Popup('PREDICTED DATA page')
         elif event == "COMMUNITY":
@@ -206,6 +207,33 @@ def win_Plots():
             sg.Popup('ABOUT page')
         else:
             break
+
+def win_Analysis():
+    layout = [[
+        sg.Frame(layout=[[sg.Button('HOME',size=(15, 2))],[sg.Button("BARPLOT", size=(15, 2))],
+                         [sg.Button("DISTPLOT", size=(15, 2))],[sg.Button("JOINTPLOT", size=(15, 2))],
+                         [sg.Button("STRIPPLOT", size=(15, 2))]],title="Analysis",relief=sg.RELIEF_GROOVE)]]
+    window = sg.Window('APP name', layout, margins=(100, 50))
+    while True:
+        event, values = window.Read()
+        if event == "HOME":
+            window.close()
+            win_Login()
+        elif event == "BARPLOT":
+            sns.barplot(cov_mut['YYYY-MM-DD'], cov_mut['DNAENC'])
+            plt.show()
+        elif event == "DISTPLOT":
+            sns.distplot(cov_mut['DNAENC'])
+            plt.show()
+        elif event == "JOINTPLOT":
+            sns.jointplot(cov_mut['YYYY-MM-DD'], cov_mut['DNAENC'])
+            plt.show()
+        elif event == "STRIPPLOT":
+            sns.stripplot(cov_mut['Location'], cov_mut['Isolate ID'])
+            plt.show()
+        else:
+            break
+
 
 # Signup Interface
 def win_Signup():
@@ -259,51 +287,6 @@ def win_Signup():
             win_Signup()
     except Exception as err:
         window.close()
-
-# Verify Window Interface
-def win_Verify(code, get_email):
-    try:
-        # Interface Layout
-        layout = [[sg.Text('OTP sent to your registered Email ID...')],
-                  [sg.Text('Enter OTP : '), sg.InputText(key='in1')],
-                  [sg.Button(' Verify ')],
-                  [sg.Text("Didn't recieved OTP?"), sg.Button(' Resend OTP ')]]
-
-        window = sg.Window('Verifying', layout, margins=(20, 30))
-        # Backend Logic
-        event, values = window.Read()
-        if (event == ' Verify '):
-            in_otp = str(values['in1'])
-            if (in_otp.isspace() == True):
-                sg.Popup('Otp cannot contain space!!')
-                window.close()
-                win_Verify(code, get_email)
-            else:
-                in_otp = int(values['in1'])
-                pass
-            if not in_otp:
-                sg.Popup('Please Enter OTP!!')
-                window.close()
-                win_Verify(code, get_email)
-            elif (in_otp == code):
-                window.close()
-                win_resetpass()
-            else:
-                sg.Popup('Incorrect OTP!!')
-                window.close()
-                win_Login()
-        elif (event == ' Resend OTP '):
-            send_otp(code, get_email)
-            window.close()
-            win_Verify(code, get_email)
-        elif (event == sg.WIN_CLOSED):
-            window.close()
-        else:
-            window.close()
-            win_Verify()
-    except Exception as err:
-        sg.Popup(err)
-        win_Verify()
 
 # Security Setup Interface
 def sec_ques_setup():
@@ -399,59 +382,6 @@ def win_setup_Incomplete():
         window.close()
         win_setup_Incomplete()
 
-# Password Reset Interface
-def win_resetpass():
-    # Interface Layout
-    layout = [[sg.Text('Please Enter your New Password...')],
-              [sg.Text('New Password : '), sg.InputText(key='in1', password_char='*')],
-              [sg.Text('Confirm Password : '), sg.InputText(key='in2', password_char='*')],
-              [sg.Button(' Reset ')]]
-
-    window = sg.Window('Reset Password', layout)
-    # Backend Logic
-    event, values = window.Read()
-    if (event == sg.WIN_CLOSED):
-        window.close()
-    elif (event == ' Reset '):
-        with open('datafile.py') as f:
-            dic = json.load(f)
-        ol_pass = list(dic.values())[0]
-        o_pass = pass_decoder(ol_pass)
-        if (not str(values['in1'])) or (not str(values['in2'])):
-            window.close()
-            sg.Popup('Please Enter your new Password!!')
-            win_resetpass()
-        elif (str(values['in1']).isspace() == True) or (str(values['in2']).isspace() == True):
-            window.close()
-            sg.Popup('Password cannot contain spaces!!')
-            win_resetpass()
-        elif (o_pass == str(values['in1'])):
-            window.close()
-            sg.Popup('You already used this password..\nPlease Enter another one!!')
-            win_resetpass()
-        elif (len(values['in1']) < 8):
-            window.close()
-            sg.Popup('Length of Password must be of 8 characters!!')
-            win_resetpass()
-        elif (str(values['in1']) == str(values['in2'])):
-            with open('datafile.py', 'r') as f:
-                data = json.load(f)
-                email = list(data)[0]
-            repass = str(values['in1'])
-            relpass = pass_encoder(repass)
-            data[email] = relpass
-            with open('datafile.py', 'w') as fl:
-                json.dump(data, fl)
-            window.close()
-            win_confirm()
-            win_Login()
-        else:
-            window.close()
-            win_resetpass()
-    else:
-        window.close()
-        win_resetpass()
-
 # Checking Security Question
 def sec_ques_check():
     with open('datafile.py', 'r') as f:
@@ -516,8 +446,6 @@ def win_Fuser():
     email = get_email()
     # Interface Layout
     layout = [[sg.Text('Your Email is '), sg.Text(email)],
-              [sg.Text('Have you forgotten the Password?')],
-              [sg.Button(' Recover Account ')],
               [sg.Text('If not, then '), sg.Button(' Log In ')]]
 
     window = sg.Window('Account Recovery', layout)
@@ -525,9 +453,6 @@ def win_Fuser():
     event, values = window.Read()
     if (event == sg.WIN_CLOSED):
         window.close()
-    elif (event == ' Recover Account '):
-        window.close()
-        win_Verify()
     elif (event == ' LogIn '):
         window.close()
         win_Login()
@@ -585,35 +510,6 @@ def pass_decoder(evalue):
         pss = pss + chr(val)
     return str(pss)
 
-# Verify Function
-def verify():
-    code, get_email = otp_process()
-    return code, get_email
-
-# Send OTP to register EMail
-def send_otp(otp, email):
-    try:
-        port = 465
-        sender_email = 'safeandsecureyourdata@gmail.com'
-        sender_email_pass = 'No@reply2020'
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL('smtp.gmail.com', port, context=context) as server:
-            server.login(sender_email, sender_email_pass)
-            message = ('Your OTP is {}').format(otp)
-            server.sendmail(sender_email, email, message)
-        return
-    except Exception as err:
-        sg.Popup(err)
-        win_Login()
-
-# Generating OTP
-def otp_process():
-    code = random.randint(111111, 999999)
-    with open('datafile.py') as f:
-        data = json.load(f)
-    get_email = list(data)[0]
-    send_otp(code, get_email)
-    return code, get_email
 
 # Backup Setup Process
 def win_choice():
