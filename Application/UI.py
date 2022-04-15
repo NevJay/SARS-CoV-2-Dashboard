@@ -12,6 +12,7 @@ from sklearn.preprocessing import LabelEncoder
 import ctypes
 import platform
 import seaborn as sns
+from pathlib import Path
 
 # ---- APPLICATION GUI LAYOUT ---------------------------------------------- #
 main_layout = [
@@ -169,7 +170,15 @@ def win_Plots():
         elif event == "COMMUNITY":
             sg.Popup('COMMUNITY page')
         elif event == "ABOUT":
-            sg.Popup('ABOUT page')
+            filename = 'hello.txt'
+            if Path(filename).is_file():
+                try:
+                    with open(filename, "rt", encoding='utf-8') as f:
+                        text = f.read()
+                    popup_text(filename, text)
+                except Exception as e:
+                    print("Error: ", e)
+
         else:
             break
 
@@ -414,6 +423,18 @@ def win_Analysis():
             break
 
 
+def popup_text(filename, text):
+
+    layout = [
+        [sg.Multiline(text, size=(80, 25)),],
+    ]
+    win = sg.Window(filename, layout, modal=True, finalize=True)
+
+    while True:
+        event, values = win.read()
+        if event == sg.WINDOW_CLOSED:
+            break
+    win.close()
 
 # ---- MAIN EVENT LOOP ----------------------------------------------------- #
 create_db()
