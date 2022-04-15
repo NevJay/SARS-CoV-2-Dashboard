@@ -1,0 +1,113 @@
+FROM SKLEARN.cluster IMPORT KMeans
+
+IMPORT pandAS AS pd
+
+FROM SKLEARN.metrics IMPORT silhouette_score
+
+FROM SKLEARN.preprocessing IMPORT MinMaxScaler
+
+FROM matplotlib IMPORT pyplot AS PLOT
+
+FROM SKLEARN.preprocessing IMPORT LabelEncoder
+
+
+
+SET DataFrame TO pd.READ("output1.csv")
+
+OUTPUT(DataFrame.DNAENC)
+
+SET le TO LabelEncoder()
+
+SET DataFrame["Gene name"] TO le.FIT&TRANSFORM(DataFrame["Gene name"])
+
+PLOT.SCATTER(DataFrame['Gene name'],DataFrame.DNAENC)
+
+PLOT.XLABEL('Gene name')
+
+PLOT.YLABEL('DNAENC')
+
+#PLOT.SHOW()
+
+
+
+SET km TO KMeans(n_clusters=3)
+
+SET y_predicted TO km.FIT&PREDICT(DataFrame[['Gene name','DNAENC']])
+
+y_predicted
+
+DataFrame['cluster']=y_predicted
+
+km.cluster_centers_
+
+SET score TO silhouette_score(DataFrame[['Gene name','DNAENC']], km.LABELs_, metric='euclidean')
+
+#
+
+# Print the score
+
+#
+
+OUTPUT('Silhouetter Score: %.3f' % score)
+
+SET DataFrame1 TO DataFrame[DataFrame.cluster==0]
+
+SET DataFrame2 TO DataFrame[DataFrame.cluster==1]
+
+SET DataFrame3 TO DataFrame[DataFrame.cluster==2]
+
+PLOT.SCATTER(DataFrame1['Gene name'],DataFrame1['DNAENC'], COLOR='green',LABEL='cluster1')
+
+PLOT.SCATTER(DataFrame2['Gene name'],DataFrame2['DNAENC'], COLOR='red',LABEL='cluster2')
+
+PLOT.SCATTER(DataFrame3['Gene name'],DataFrame3['DNAENC'], COLOR='yellow',LABEL='cluster3')
+
+PLOT.SCATTER(km.cluster_centers_[:,0],km.cluster_centers_[:,1],COLOR='purple',marker='*',LABEL='centroid')
+
+PLOT.XLABEL('Gene name')
+
+PLOT.YLABEL('DNAENC')
+
+PLOT.LEGEND()
+
+PLOT.SHOW()
+
+SET scaler TO MinMaxScaler()
+
+
+
+scaler.FIT(DataFrame[['DNAENC']])
+
+SET DataFrame['DNAENC'] TO scaler.TRANSFORM(DataFrame[['DNAENC']])
+
+
+
+scaler.FIT(DataFrame[['Gene name']])
+
+SET DataFrame['Gene name'] TO scaler.TRANSFORM(DataFrame[['Gene name']])
+
+PLOT.SCATTER(DataFrame['Gene name'],DataFrame['DNAENC'])
+
+PLOT.SHOW()
+
+SET sse TO []
+
+SET k_rng TO range(1,10)
+
+FOR k IN k_rng:
+
+    SET km TO KMeans(n_clusters=k)
+
+    km.FIT(DataFrame[['Gene name','DNAENC']])
+
+    sse.APPEND(km.inertia_)
+
+
+
+PLOT.XLABEL('K')
+
+PLOT.YLABEL('Sum of squared error')
+
+PLOT.plot(k_rng,sse)
+
+PLOT.SHOW()
