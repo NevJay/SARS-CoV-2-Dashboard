@@ -13,8 +13,6 @@ import ctypes
 import platform
 import seaborn as sns
 
-cov_mut=pd.read_csv('output1.csv',nrows=500)
-
 # ---- APPLICATION GUI LAYOUT ---------------------------------------------- #
 main_layout = [
     [sg.Text('What do you want to do?')],
@@ -79,7 +77,7 @@ def win_Plots():
         sg.Frame(layout=[[sg.Button('EXIT',size=(15, 2))],[sg.Button("PREDICTED DATA", size=(15, 2))],
                          [sg.Button("CLUSTERED DATA", size=(15, 2))],[sg.Button("DATA ANALYSIS", size=(15, 2))],
                          [sg.Button("COMMUNITY", size=(15, 2))],[sg.Button("ABOUT", size=(15, 2))]],title="Plots",relief=sg.RELIEF_GROOVE)]]
-    window = sg.Window('APP name', layout, margins=(100, 50))
+    window = sg.Window('Genetrix', layout, margins=(100, 50))
     while True:
         event, values = window.Read()
         if event == "EXIT":
@@ -187,17 +185,231 @@ def win_Analysis():
         if event == "EXIT":
             window.close()
         elif event == "BARPLOT":
-            sns.barplot(cov_mut['YYYY-MM-DD'], cov_mut['DNAENC'])
-            plt.show()
+            # Functions to prevent GUI blurring
+            def make_dpi_aware():
+                if int(platform.release()) >= 8:
+                    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+
+            make_dpi_aware()
+
+            # Function for drawing
+            def draw_figure(canvas, figure):
+                figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+                figure_canvas_agg.draw()
+                figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+                return figure_canvas_agg
+
+            # Layout creation
+            layout = [[sg.Text('BarPlot of SARS-CoV-2 mutations')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Canvas(key='-CANVAS-')],
+                      [sg.Button("Plot"), sg.Button("Clear")]]
+
+            # Create a window. finalize=Must be True.
+            window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
+                               element_justification='center', font='Monospace 18')
+
+            # Create a fig for embedding.
+            fig = plt.figure(figsize=(17, 8))
+            ax = fig.add_subplot(111)
+            fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+            # Event loop
+            while True:
+                event, values = window.read()
+                print(event, values)
+                print(values["-IN-"])
+                # sg.Print(event, values)
+
+                if event in (None, "Cancel"):
+                    break
+
+                elif event == "Plot":
+                    df = pd.read_csv(values["-IN-"],nrows=600)
+                    print(df.head())
+                    plt.xlabel('YYYY-MM-DD')
+                    plt.ylabel('DNAENC')
+                    sns.barplot(df['YYYY-MM-DD'], df['DNAENC'])
+                    fig_agg.draw()
+
+                elif event == "Clear":
+                    ax.cla()
+                    fig_agg.draw()
+
+                elif event == sg.FileBrowse():
+                    print(values["-IN-"])
+            # close the window.
+            window.close()
         elif event == "DISTPLOT":
-            sns.distplot(cov_mut['DNAENC'])
-            plt.show()
+            # Functions to prevent GUI blurring
+            def make_dpi_aware():
+                if int(platform.release()) >= 8:
+                    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+
+            make_dpi_aware()
+
+            # Function for drawing
+            def draw_figure(canvas, figure):
+                figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+                figure_canvas_agg.draw()
+                figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+                return figure_canvas_agg
+
+            # Layout creation
+            layout = [[sg.Text('DISTPLOT of SARS-CoV-2 mutations')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Canvas(key='-CANVAS-')],
+                      [sg.Button("Plot"), sg.Button("Clear")]]
+
+            # Create a window. finalize=Must be True.
+            window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
+                               element_justification='center', font='Monospace 18')
+
+            # Create a fig for embedding.
+            fig = plt.figure(figsize=(17, 8))
+            ax = fig.add_subplot(111)
+            fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+            # Event loop
+            while True:
+                event, values = window.read()
+                print(event, values)
+                print(values["-IN-"])
+                # sg.Print(event, values)
+
+                if event in (None, "Cancel"):
+                    break
+
+                elif event == "Plot":
+                    df = pd.read_csv(values["-IN-"])
+                    print(df.head())
+                    plt.xlabel('DNAENC')
+                    plt.ylabel('DENSITY')
+                    sns.distplot(df['DNAENC'])
+                    fig_agg.draw()
+
+
+
+                elif event == "Clear":
+                    ax.cla()
+                    fig_agg.draw()
+
+                elif event == sg.FileBrowse():
+                    print(values["-IN-"])
+            # close the window.
+            window.close()
         elif event == "JOINTPLOT":
-            sns.jointplot(cov_mut['YYYY-MM-DD'], cov_mut['DNAENC'])
-            plt.show()
+            # Functions to prevent GUI blurring
+            def make_dpi_aware():
+                if int(platform.release()) >= 8:
+                    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+
+            make_dpi_aware()
+
+            # Function for drawing
+            def draw_figure(canvas, figure):
+                figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+                figure_canvas_agg.draw()
+                figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+                return figure_canvas_agg
+
+            # Layout creation
+            layout = [[sg.Text('JOINTPLOT of SARS-CoV-2 mutations')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Canvas(key='-CANVAS-')],
+                      [sg.Button("Plot"), sg.Button("Clear")]]
+
+            # Create a window. finalize=Must be True.
+            window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
+                               element_justification='center', font='Monospace 18')
+
+            # Create a fig for embedding.
+            fig = plt.figure(figsize=(17, 8))
+            ax = fig.add_subplot(111)
+            fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+            # Event loop
+            while True:
+                event, values = window.read()
+                print(event, values)
+                print(values["-IN-"])
+                # sg.Print(event, values)
+
+                if event in (None, "Cancel"):
+                    break
+
+                elif event == "Plot":
+                    df = pd.read_csv(values["-IN-"])
+                    print(df.head())
+                    plt.xlabel('YYYY-MM-DD')
+                    plt.ylabel('DNAENC')
+                    sns.jointplot(df['YYYY-MM-DD'], df['DNAENC'])
+                    fig_agg.draw()
+
+
+
+                elif event == "Clear":
+                    ax.cla()
+                    fig_agg.draw()
+
+                elif event == sg.FileBrowse():
+                    print(values["-IN-"])
+            # close the window.
+            window.close()
         elif event == "STRIPPLOT":
-            sns.stripplot(cov_mut['Location'], cov_mut['Isolate ID'])
-            plt.show()
+            # Functions to prevent GUI blurring
+            def make_dpi_aware():
+                if int(platform.release()) >= 8:
+                    ctypes.windll.shcore.SetProcessDpiAwareness(True)
+
+            make_dpi_aware()
+
+            # Function for drawing
+            def draw_figure(canvas, figure):
+                figure_canvas_agg = FigureCanvasTkAgg(figure, canvas)
+                figure_canvas_agg.draw()
+                figure_canvas_agg.get_tk_widget().pack(side='top', fill='both', expand=1)
+                return figure_canvas_agg
+
+            # Layout creation
+            layout = [[sg.Text('STRIPPLOT of SARS-CoV-2 mutations')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Canvas(key='-CANVAS-')],
+                      [sg.Button("Plot"), sg.Button("Clear")]]
+
+            # Create a window. finalize=Must be True.
+            window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
+                               element_justification='center', font='Monospace 18')
+
+            # Create a fig for embedding.
+            fig = plt.figure(figsize=(17, 8))
+            ax = fig.add_subplot(111)
+            fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
+            # Event loop
+            while True:
+                event, values = window.read()
+                print(event, values)
+                print(values["-IN-"])
+                # sg.Print(event, values)
+
+                if event in (None, "Cancel"):
+                    break
+
+                elif event == "Plot":
+                    df = pd.read_csv(values["-IN-"],nrows=500)
+                    print(df.head())
+                    plt.xlabel('Location')
+                    plt.ylabel('Isolate ID')
+                    sns.stripplot(df['Location'], df['Isolate ID'])
+                    fig_agg.draw()
+
+
+
+                elif event == "Clear":
+                    ax.cla()
+                    fig_agg.draw()
+
+                elif event == sg.FileBrowse():
+                    print(values["-IN-"])
+            # close the window.
+            window.close()
         else:
             break
 
