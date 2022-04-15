@@ -1,0 +1,9 @@
+IMPORT pandAS AS pd
+
+
+
+SET DataFrame2 TO pd.READ('new_data_set1.csv')
+
+OUTPUT(DataFrame2.DUPLICATED().SUM())
+
+

@@ -7,7 +7,7 @@ Make sure to put
 as a comment at the end of lines that contain a function call that don't also contain an assignment (=).
 '''
 
-python_file = 'Kmeans.py'
+python_file = 'Chi2.py'
 
 basic_conversion_rules = {"for": "FOR", "=": "TO", "if": "IF", "==": "EQUALS", "while": "WHILE", "until": "UNTIL",
                           "import": "IMPORT", "class": "DEFINE CLASS", "def": "DEFINE FUNCTION", "else:": "ELSE:",
@@ -18,7 +18,9 @@ advanced_conversion_rules = {"print": "OUTPUT", "return": "RETURN", "input": "IN
                              "df2": "DataFrame2", "df3": "DataFrame3", "from": "FROM", "as": "AS", "plt": "PLOT", "xlabel": "XLABEL",
                              "ylabel": "YLABEL", "read_csv": "READ", "scatter": "SCATTER", "show": "SHOW", "fit_predict": "FIT&PREDICT",
                              "legend": "LEGEND", "fit_transform": "FIT&TRANSFORM", "transform": "TRANSFORM", "color": "COLOR", "label": "LABEL",
-                             "fit": "FIT", "append": "APPEND", "sklearn": "SKLEARN"}
+                             "fit": "FIT", "append": "APPEND", "sklearn": "SKLEARN", "pandas": "PANDAS", "preprocessing": "PREPROCESSING",
+                             "matplotlib": "MATPLOTLIB", "pyplot": "PYPLOT", "marker": "MARKER", "model_selection": "MODEL_SELECTION",
+                             "train_test_split": "TRAIN_TEST_SPLIT","chi2": "CHI2"}
 
 
 def l2pseudo(to_pseudo):

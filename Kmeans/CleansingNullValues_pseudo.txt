@@ -1,0 +1,15 @@
+IMPORT PANDAS AS pd
+
+
+
+SET DataFrame1 TO pd.READ('new_data_set.csv')
+
+OUTPUT(DataFrame1.ISNA().SUM())
+
+SET DataFrame1 TO DataFrame1.DROPNA()
+
+DataFrame1.TO_CSV('new_data_set1.csv', INDEX=False)
+
+
+Z
+
