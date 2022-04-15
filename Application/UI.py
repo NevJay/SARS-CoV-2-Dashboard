@@ -22,13 +22,13 @@ main_layout = [
 login_layout = [
     [sg.Text('username'), sg.Input(key='username')],
     [sg.Text('password'), sg.Input(password_char='*', key='password')],
-    [sg.Button('login', bind_return_key=True)]]
+    [sg.Button('sign-up'), sg.Button('login', bind_return_key=True)]]
 
 signup_layout = [
     [sg.Text('username'), sg.Input(key='username')],
     [sg.Text('email'), sg.Input(key='email')],
     [sg.Text('password'), sg.Input(password_char='*', key='password')],
-    [sg.Button('sign-up', bind_return_key=True)]]
+    [sg.Button('Login'), sg.Button('sign-up', bind_return_key=True)]]
 
 main_window = sg.Window('Main Menu', main_layout, element_justification='center')
 login_window = sg.Window('Login', login_layout, element_justification='right')
@@ -105,7 +105,7 @@ def win_Plots():
             layout = [[sg.Text('Kmeans clustering of SARS-CoV-2 mutations')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
                       [sg.Canvas(key='-CANVAS-')],
-                      [sg.Button("Plot"), sg.Button("Clear")]]
+                      [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
 
             # Create a window. finalize=Must be True.
             window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -154,6 +154,10 @@ def win_Plots():
                                label='centroid')
                     fig_agg.draw()
 
+                elif event == "Back":
+                    window.close()
+                    win_Analysis()
+
                 elif event == "Clear":
                     ax.cla()
                     fig_agg.draw()
@@ -185,15 +189,17 @@ def win_Plots():
 
 def win_Analysis():
     layout = [[
-        sg.Frame(layout=[[sg.Button('EXIT',size=(15, 2))],[sg.Button("BARPLOT", size=(15, 2))],
+        sg.Frame(layout=[[sg.Button('BACK',size=(15, 2))],[sg.Button("BARPLOT", size=(15, 2))],
                          [sg.Button("DISTPLOT", size=(15, 2))],[sg.Button("JOINTPLOT", size=(15, 2))],
                          [sg.Button("STRIPPLOT", size=(15, 2))]],title="Analysis",relief=sg.RELIEF_GROOVE)]]
-    window = sg.Window('APP name', layout, margins=(100, 50))
+    window = sg.Window('Genetrix', layout, margins=(100, 50))
     while True:
         event, values = window.Read()
-        if event == "EXIT":
+        if event == "BACK":
             window.close()
+            win_Plots()
         elif event == "BARPLOT":
+            window.close()
             # Functions to prevent GUI blurring
             def make_dpi_aware():
                 if int(platform.release()) >= 8:
@@ -212,7 +218,7 @@ def win_Analysis():
             layout = [[sg.Text('BarPlot of SARS-CoV-2 mutations')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
                       [sg.Canvas(key='-CANVAS-')],
-                      [sg.Button("Plot"), sg.Button("Clear")]]
+                      [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
 
             # Create a window. finalize=Must be True.
             window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -244,11 +250,16 @@ def win_Analysis():
                     ax.cla()
                     fig_agg.draw()
 
+                elif event == "Back":
+                    window.close()
+                    win_Analysis()
+
                 elif event == sg.FileBrowse():
                     print(values["-IN-"])
             # close the window.
             window.close()
         elif event == "DISTPLOT":
+            window.close()
             # Functions to prevent GUI blurring
             def make_dpi_aware():
                 if int(platform.release()) >= 8:
@@ -267,7 +278,7 @@ def win_Analysis():
             layout = [[sg.Text('DISTPLOT of SARS-CoV-2 mutations')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
                       [sg.Canvas(key='-CANVAS-')],
-                      [sg.Button("Plot"), sg.Button("Clear")]]
+                      [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
 
             # Create a window. finalize=Must be True.
             window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -301,11 +312,16 @@ def win_Analysis():
                     ax.cla()
                     fig_agg.draw()
 
+                elif event == "Back":
+                    window.close()
+                    win_Analysis()
+
                 elif event == sg.FileBrowse():
                     print(values["-IN-"])
             # close the window.
             window.close()
         elif event == "JOINTPLOT":
+            window.close()
             # Functions to prevent GUI blurring
             def make_dpi_aware():
                 if int(platform.release()) >= 8:
@@ -324,7 +340,7 @@ def win_Analysis():
             layout = [[sg.Text('JOINTPLOT of SARS-CoV-2 mutations')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
                       [sg.Canvas(key='-CANVAS-')],
-                      [sg.Button("Plot"), sg.Button("Clear")]]
+                      [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
 
             # Create a window. finalize=Must be True.
             window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -352,17 +368,20 @@ def win_Analysis():
                     sns.jointplot(df['YYYY-MM-DD'], df['DNAENC'])
                     fig_agg.draw()
 
-
-
                 elif event == "Clear":
                     ax.cla()
                     fig_agg.draw()
+
+                elif event == "Back":
+                    window.close()
+                    win_Analysis()
 
                 elif event == sg.FileBrowse():
                     print(values["-IN-"])
             # close the window.
             window.close()
         elif event == "STRIPPLOT":
+            window.close()
             # Functions to prevent GUI blurring
             def make_dpi_aware():
                 if int(platform.release()) >= 8:
@@ -381,7 +400,7 @@ def win_Analysis():
             layout = [[sg.Text('STRIPPLOT of SARS-CoV-2 mutations')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
                       [sg.Canvas(key='-CANVAS-')],
-                      [sg.Button("Plot"), sg.Button("Clear")]]
+                      [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
 
             # Create a window. finalize=Must be True.
             window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -409,7 +428,9 @@ def win_Analysis():
                     sns.stripplot(df['Location'], df['Isolate ID'])
                     fig_agg.draw()
 
-
+                elif event == "Back":
+                    window.close()
+                    win_Analysis()
 
                 elif event == "Clear":
                     ax.cla()
@@ -449,12 +470,20 @@ while True:
         if log_event == 'login':
             login(log_values)
             break
+        elif log_event == 'sign-up':
+            login_window.close()
+            sign_event, sign_values = signup_window.read()
     if event == 'sign-up':
         main_window.close()
         sign_event, sign_values = signup_window.read()
         if sign_event == 'sign-up':
             signup(sign_values)
             break
+        elif sign_event =='Login':
+            signup_window.close()
+            log_event, log_values = login_window.read()
+
+
 
 
 
