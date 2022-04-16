@@ -1,14 +1,14 @@
-FROM SKLEARN.cluster IMPORT KMeans
+FROM SKLEARN.CLUSTER IMPORT KMeans
 
-IMPORT pandAS AS pd
+IMPORT PANDAS AS pd
 
-FROM SKLEARN.metrics IMPORT silhouette_score
+FROM SKLEARN.METRICS IMPORT silhouette_score
 
-FROM SKLEARN.preprocessing IMPORT MinMaxScaler
+FROM SKLEARN.PREPROCESSING IMPORT MinMaxScaler
 
-FROM matplotlib IMPORT pyplot AS PLOT
+FROM MATPLOTLIB IMPORT PYPLOT AS PLOT
 
-FROM SKLEARN.preprocessing IMPORT LabelEncoder
+FROM SKLEARN.PREPROCESSING IMPORT LabelEncoder
 
 
 
@@ -16,7 +16,7 @@ SET DataFrame TO pd.READ("output1.csv")
 
 OUTPUT(DataFrame.DNAENC)
 
-SET le TO LabelEncoder()
+SET le TO LabelEncoder
 
 SET DataFrame["Gene name"] TO le.FIT&TRANSFORM(DataFrame["Gene name"])
 
@@ -38,9 +38,9 @@ y_predicted
 
 DataFrame['cluster']=y_predicted
 
-km.cluster_centers_
+km.CLUSTER_CENTERS
 
-SET score TO silhouette_score(DataFrame[['Gene name','DNAENC']], km.LABELs_, metric='euclidean')
+SET score TO SILHOUETTE_SCORE(DataFrame[['Gene name','DNAENC']], km.LABELS_, METRIC='euclidean')
 
 #
 
@@ -48,7 +48,7 @@ SET score TO silhouette_score(DataFrame[['Gene name','DNAENC']], km.LABELs_, met
 
 #
 
-OUTPUT('Silhouetter Score: %.3f' % score)
+OUTPUT('Silhouetter Score:', score)
 
 SET DataFrame1 TO DataFrame[DataFrame.cluster==0]
 
@@ -62,7 +62,7 @@ PLOT.SCATTER(DataFrame2['Gene name'],DataFrame2['DNAENC'], COLOR='red',LABEL='cl
 
 PLOT.SCATTER(DataFrame3['Gene name'],DataFrame3['DNAENC'], COLOR='yellow',LABEL='cluster3')
 
-PLOT.SCATTER(km.cluster_centers_[:,0],km.cluster_centers_[:,1],COLOR='purple',marker='*',LABEL='centroid')
+PLOT.SCATTER(km.cluster_centers_[:,0],km.cluster_centers_[:,1],COLOR='purple',MARKER='*',LABEL='centroid')
 
 PLOT.XLABEL('Gene name')
 
@@ -72,7 +72,7 @@ PLOT.LEGEND()
 
 PLOT.SHOW()
 
-SET scaler TO MinMaxScaler()
+SET scaler TO MinMaxScaler
 
 
 
@@ -92,7 +92,7 @@ PLOT.SHOW()
 
 SET sse TO []
 
-SET k_rng TO range(1,10)
+SET k_rng TO RANGE(1,10)
 
 FOR k IN k_rng:
 
@@ -108,6 +108,6 @@ PLOT.XLABEL('K')
 
 PLOT.YLABEL('Sum of squared error')
 
-PLOT.plot(k_rng,sse)
+PLOT.PLOT(k_rng,sse)
 
 PLOT.SHOW()

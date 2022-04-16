@@ -1,0 +1,137 @@
+FROM PANDAS IMPORT READ
+
+FROM SKLEARN.MODEL_SELECTION IMPORT TRAIN_TEST_SPLIT
+
+FROM SKLEARN.PREPROCESSING IMPORT LabelEncoder
+
+FROM SKLEARN.PREPROCESSING IMPORT OrdinalEncoder
+
+FROM SKLEARN.feature_selection IMPORT SelectKBest
+
+FROM MATPLOTLIB IMPORT PYPLOT
+
+FROM SKLEARN.feature_selection IMPORT CHI2
+
+
+
+
+
+# load the datASet
+
+DEFINE FUNCTION load_datASet(filename):
+
+    # load the datASet AS a pandAS DataFrame
+
+    SET data TO READ(filename)
+
+    data.DROP('Sequence', AXIS=1)
+
+    # retrieve numpy array
+
+    SET datASet TO data.values
+
+    # split into INPUT (X) and output (y) variables
+
+    SET X TO datASet[:, :-1]
+
+    SET y TO datASet[:, -1]
+
+    # format all fields AS string
+
+    SET X TO X.ASTYPE(str)
+
+    RETURN X, y
+
+
+
+
+
+# prepare INPUT data
+
+DEFINE FUNCTION prepare_INPUTs(X_train, X_test):
+
+    SET oe TO OrdinalEncoder
+
+    oe.FIT(X_train)
+
+    SET X_train_enc TO oe.FIT&TRANSFORM(X_train)
+
+    SET X_test_enc TO oe.FIT&TRANSFORM(X_test)
+
+    RETURN X_train_enc, X_test_enc
+
+
+
+
+
+# prepare target
+
+DEFINE FUNCTION prepare_targets(y_train, y_test):
+
+    SET le TO LabelEncoder
+
+    le.FIT(y_train)
+
+    SET y_train_enc TO le.FIT&TRANSFORM(y_train)
+
+    SET y_test_enc TO le.FIT&TRANSFORM(y_test)
+
+    RETURN y_train_enc, y_test_enc
+
+
+
+
+
+# feature selection
+
+DEFINE FUNCTION select_features(X_train, y_train, X_test):
+
+    SET fs TO SelectKBest(SCORE_FUNC=CHI2, K='all')
+
+    fs.FIT(X_train, y_train)
+
+    SET X_train_fs TO fs.TRANSFORM(X_train)
+
+    SET X_test_fs TO fs.TRANSFORM(X_test)
+
+    RETURN X_train_fs, X_test_fs, fs
+
+
+
+
+
+# load the datASet
+
+SET X, y TO load_datASet('new_data_set3.csv')
+
+# split into train and test sets
+
+SET X_train, X_test, y_train, y_test TO TRAIN_TEST_SPLIT(X, y, TEST_SIZE=0.33, RANDOM_STATE=42)
+
+# prepare INPUT data
+
+SET X_train_enc, X_test_enc TO prepare_INPUTs(X_train, X_test)
+
+# prepare output data
+
+SET y_train_enc, y_test_enc TO prepare_targets(y_train, y_test)
+
+# feature selection
+
+SET X_train_fs, X_test_fs, fs TO SELECT_FEATURES(X_train_enc, y_train_enc, X_test_enc)
+
+# what are scores FOR the features
+
+FOR i IN RANGE(LENGTH(fs.scores_)):
+
+    OUTPUT('Feature:' , (i, fs.scores_[i]))
+
+# plot the scores
+
+
+
+PYPLOT.BAR(i FOR i IN RANGE(LENGTH(fs.scores_)), fs.SCORES_)
+
+PYPLOT.SHOW()
+
+
