@@ -30,7 +30,7 @@ signup_layout = [
     [sg.Text('password'), sg.Input(password_char='*', key='password')],
     [sg.Button('Login'), sg.Button('sign-up', bind_return_key=True)]]
 
-main_window = sg.Window('Main Menu', main_layout, element_justification='center')
+main_window = sg.Window('Main Menu', main_layout, element_justification='center',size=(200,80))
 login_window = sg.Window('Login', login_layout, element_justification='right')
 signup_window = sg.Window('Create Account', signup_layout, element_justification='right')
 
@@ -75,9 +75,9 @@ def signup(values):
 
 def win_Plots():
     layout = [[
-        sg.Frame(layout=[[sg.Button('EXIT',size=(15, 2))],[sg.Button("PREDICTED DATA", size=(15, 2))],
+        sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2))],
                          [sg.Button("CLUSTERED DATA", size=(15, 2))],[sg.Button("DATA ANALYSIS", size=(15, 2))],
-                         [sg.Button("COMMUNITY", size=(15, 2))],[sg.Button("ABOUT", size=(15, 2))]],title="Plots",relief=sg.RELIEF_GROOVE)]]
+                         [sg.Button("COMMUNITY", size=(15, 2))],[sg.Button("ABOUT", size=(15, 2))],[sg.Button('EXIT',size=(15, 2))]],title="Plots",relief=sg.RELIEF_GROOVE)]]
     window = sg.Window('Genetrix', layout, margins=(100, 50))
     while True:
         event, values = window.Read()
@@ -189,9 +189,9 @@ def win_Plots():
 
 def win_Analysis():
     layout = [[
-        sg.Frame(layout=[[sg.Button('BACK',size=(15, 2))],[sg.Button("BARPLOT", size=(15, 2))],
+        sg.Frame(layout=[[sg.Button("BARPLOT", size=(15, 2))],
                          [sg.Button("DISTPLOT", size=(15, 2))],[sg.Button("JOINTPLOT", size=(15, 2))],
-                         [sg.Button("STRIPPLOT", size=(15, 2))]],title="Analysis",relief=sg.RELIEF_GROOVE)]]
+                         [sg.Button("STRIPPLOT", size=(15, 2))],[sg.Button('BACK',size=(15, 2))]],title="Analysis",relief=sg.RELIEF_GROOVE)]]
     window = sg.Window('Genetrix', layout, margins=(100, 50))
     while True:
         event, values = window.Read()
