@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.cluster import KMeans
-import pandas as pds
+import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import LabelEncoder
@@ -83,7 +83,7 @@ def win_Plots():
     layout = [[
         sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2))],
                          [sg.Button("CLUSTERED DATA", size=(15, 2))],[sg.Button("DATA ANALYSIS", size=(15, 2))],
-                         [sg.Button("COMMUNITY", size=(15, 2))],[sg.Button("ABOUT", size=(15, 2))],[sg.Button('EXIT',size=(15, 2))]],title="Plots",relief=sg.RELIEF_GROOVE)]]
+                         [sg.Button("ABOUT", size=(15, 2))],[sg.Button('EXIT',size=(15, 2))]],title="Plots",relief=sg.RELIEF_GROOVE)]]
     window = sg.Window('Genetrix', layout, margins=(100, 50))
     while True:
         event, values = window.Read()
@@ -118,7 +118,7 @@ def win_Plots():
                                element_justification='center', font='Monospace 18')
 
             # Create a fig for embedding.
-            fig = plt.figure(figsize=(6, 5))
+            fig = plt.figure(figsize=(10, 5))
             ax = fig.add_subplot(111)
             fig_agg = draw_figure(window['-CANVAS-'].TKCanvas, fig)
             # Event loop
@@ -136,17 +136,13 @@ def win_Plots():
                     print(df.head())
                     le = LabelEncoder()
                     df["Isolate ID"] = le.fit_transform(df["Isolate ID"])
-                    # df["DNAENC"] = le.fit_transform(df["DNAENC"])
                     plt.scatter(df['Isolate ID'], df.DNAENC)
                     plt.xlabel('Isolate ID')
                     plt.ylabel('DNAENC')
-                    # plt.show()
 
                     km = KMeans(n_clusters=3)
                     y_predicted = km.fit_predict(df[['Isolate ID', 'DNAENC']])
-                    y_predicted
                     df['cluster'] = y_predicted
-                    km.cluster_centers_
                     df1 = df[df.cluster == 0]
                     df2 = df[df.cluster == 1]
                     df3 = df[df.cluster == 2]
@@ -177,8 +173,6 @@ def win_Plots():
             win_Analysis()
         elif event == "PREDICTED DATA":
             sg.Popup('PREDICTED DATA page')
-        elif event == "COMMUNITY":
-            sg.Popup('COMMUNITY page')
         elif event == "ABOUT":
             filename = 'hello.txt'
             if Path(filename).is_file():
@@ -258,20 +252,16 @@ def win_Analysis():
                     location = pd.DataFrame(location)
                     location = pd.DataFrame(location.value_counts().sort_index()).reset_index()
                     location.columns = ["Location", "Total Cases"]
-                    location
                     len(df_v.index)
 
                     sns.set_style("whitegrid")
-                    plt.figure(figsize=(18, 7))
                     sns.barplot(x="Location", y="Total Cases", data=location)
                     plt.title("Number of Mutations based on Location", size=20)
                     plt.xlabel("Location", size=20)
                     plt.ylabel("Number of Mutations", size=20)
-                    plt.xticks(size=15, rotation=60)
+                    plt.xticks(size=10, rotation=45)
                     plt.yticks(size=15)
-                    #plt.xticks(rotation = -45)
                     plt.savefig("raby.png")
-                    plt.show()
                     fig_agg.draw()
 
                 elif event == "Clear":
@@ -304,7 +294,7 @@ def win_Analysis():
 
             # Layout creation
             layout = [[sg.Text('CLUSTERPLOT of SARS-CoV-2 mutations')],
-                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
                       [sg.Canvas(key='-CANVAS-')],
                       [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
@@ -338,26 +328,21 @@ def win_Analysis():
                     location = pd.DataFrame(location)
                     location = pd.DataFrame(location.value_counts().sort_index()).reset_index()
                     location.columns = ["Location", "Total Cases"]
-                    location
 
                     len(df_v.index)
                     cluster = df["Cluster"]
                     cluster = pd.DataFrame(cluster)
                     cluster = pd.DataFrame(cluster.value_counts().sort_index()).reset_index()
                     cluster.columns = ["Cluster", "Count"]
-                    cluster
 
                     sns.set_style("whitegrid")
-                    plt.figure(figsize=(18, 7))
                     sns.barplot(x="Cluster", y="Count", data=cluster)
                     plt.title("Clusters", size=20)
                     plt.xlabel("Clusters", size=20)
                     plt.ylabel("Count", size=20)
                     plt.xticks(size=15, rotation=0)
                     plt.yticks(size=15)
-                    # plt.xticks(rotation = -45)
                     plt.savefig("raby.png")
-                    plt.show()
                     fig_agg.draw()
 
 
@@ -392,7 +377,7 @@ def win_Analysis():
 
             # Layout creation
             layout = [[sg.Text('CLUSTERS BASED ON LOCATIONS of SARS-CoV-2 mutations')],
-                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
                       [sg.Canvas(key='-CANVAS-')],
                       [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
@@ -426,14 +411,12 @@ def win_Analysis():
                     location = pd.DataFrame(location)
                     location = pd.DataFrame(location.value_counts().sort_index()).reset_index()
                     location.columns = ["Location", "Total Cases"]
-                    location
 
                     len(df_v.index)
                     cluster = df["Cluster"]
                     cluster = pd.DataFrame(cluster)
                     cluster = pd.DataFrame(cluster.value_counts().sort_index()).reset_index()
                     cluster.columns = ["Cluster", "Count"]
-                    cluster
 
                     clus = df[(df["Cluster"] == 0) |
                               (df["Cluster"] == 1) |
@@ -441,16 +424,13 @@ def win_Analysis():
                               (df["Cluster"] == 3)]
                     clus.head(2)
                     location_and_cluster = clus.groupby(["Location", "Cluster"])["Cluster"].agg(["count"]).reset_index()
-                    location_and_cluster
-                    plt.figure(figsize=(18, 7))
                     sns.barplot(x="Location", y="count", hue="Cluster", data=location_and_cluster)
                     plt.title("Mutations and Clusters based on location", size=20)
                     plt.xlabel("Location", size=20)
                     plt.ylabel("Mutations in each Cluster", size=20)
-                    plt.xticks(size=15, rotation=90)
+                    plt.xticks(size=9, rotation=45)
                     plt.yticks(size=15)
                     plt.savefig("mah.png")
-                    plt.show()
                     fig_agg.draw()
 
                 elif event == "Clear":
@@ -483,7 +463,7 @@ def win_Analysis():
 
             # Layout creation
             layout = [[sg.Text('CLUSTERS BASED ON GENE NAME of SARS-CoV-2 mutations')],
-                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                      [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
                       [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
                       [sg.Canvas(key='-CANVAS-')],
                       [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
@@ -517,14 +497,12 @@ def win_Analysis():
                     location = pd.DataFrame(location)
                     location = pd.DataFrame(location.value_counts().sort_index()).reset_index()
                     location.columns = ["Location", "Total Cases"]
-                    location
 
                     len(df_v.index)
                     cluster = df["Cluster"]
                     cluster = pd.DataFrame(cluster)
                     cluster = pd.DataFrame(cluster.value_counts().sort_index()).reset_index()
                     cluster.columns = ["Cluster", "Count"]
-                    cluster
 
                     clus = df[(df["Cluster"] == 0) |
                               (df["Cluster"] == 1) |
@@ -532,8 +510,6 @@ def win_Analysis():
                               (df["Cluster"] == 3)]
                     clus.head(2)
                     genename_and_cluster = clus.groupby(["Gene name", "Cluster"])["Cluster"].agg(["count"]).reset_index()
-                    genename_and_cluster
-                    plt.figure(figsize=(18, 7))
                     sns.barplot(x="Gene name", y="count", hue="Cluster", data=genename_and_cluster)
                     plt.title("Mutation Clusters based on Gene name", size=20)
                     plt.xlabel("Gene name", size=20)
@@ -541,7 +517,6 @@ def win_Analysis():
                     plt.xticks(size=15, rotation=60)
                     plt.yticks(size=15)
                     plt.savefig("mah.png")
-                    plt.show()
                     fig_agg.draw()
 
                 elif event == "Back":
