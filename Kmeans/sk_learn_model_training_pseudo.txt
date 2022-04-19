@@ -1,0 +1,223 @@
+IMPORT numpy AS np
+
+IMPORT pandAS AS pd
+
+FROM MATPLOTLIB IMPORT PYPLOT AS PLOT
+
+FROM SKLEARN.FEATURE_EXTRACTION.text IMPORT COUNTVECTORIZER
+
+FROM SKLEARN.FEATURE_EXTRACTION.text IMPORT TfiDataFrameVectorizer AS TFIDF
+
+FROM SKLEARN.FEATURE_EXTRACTION.text IMPORT TfiDataFrameTransformer
+
+FROM SKLEARN.MODEL_SELECTION IMPORT CROSS_VAL_SCORE
+
+FROM SKLEARN.METRICS IMPORT ACCURACY_SCORE, RECALL_SCORE, F1_SCORE, PRECISION_SCORE, CONFUSION_MATRIX
+
+
+
+FROM SKLEARN.MODEL_SELECTION IMPORT TRAIN_TEST_SPLIT, VALIDATION_CURVE, LEARNING_CURVE
+
+FROM SKLEARN.NAIVE_BAYES IMPORT MULTINOMIALNB
+
+
+
+DEFINE FUNCTION OUTPUTMetrics(Y_test, Y_predicted):
+
+    SET accuracy TO ACCURACY_SCORE(Y_test, Y_predicted)
+
+    SET precision TO PRECISION_SCORE(Y_test, Y_predicted, AVERAGE='weighted')
+
+    SET recall TO RECALL_SCORE(Y_test, Y_predicted, AVERAGE='weighted')
+
+    SET f1 TO F1_SCORE(Y_test, Y_predicted, AVERAGE='weighted')
+
+    OUTPUT("Accuracy: ", accuracy)
+
+    OUTPUT("Precision: ", precision)
+
+    OUTPUT("Recall: ", recall)
+
+    OUTPUT("F1: ", f1)
+
+
+
+    RETURN accuracy
+
+
+
+#splitting sequence into KMers
+
+DEFINE FUNCTION getKmers(sequence, size TO 6):
+
+    RETURN [sequence[x:x+size].LOWER() FOR x IN RANGE(LENGTH(sequence) - size + 1)]
+
+
+
+DEFINE FUNCTION train_model(data_set_size):
+
+    SET data TO pd.READ('output2.csv', NROWS=data_set_size)
+
+
+
+    OUTPUT(data.HEAD())
+
+
+
+
+
+
+
+    #APPENDing a kmer column to the dataframe
+
+
+
+    SET data['kmer'] TO data.APPLY(lambda x: getKmers(x['Sequence']), axis=1)
+
+    OUTPUT(data.HEAD())
+
+
+
+    SET #data TO data.DROP('Sequence', AXIS=1)
+
+
+
+    #convert kmers to words
+
+
+
+    SET textword TO LIST(data["kmer"])
+
+
+
+    FOR i IN RANGE(LENGTH(textword)):
+
+        SET textword[i] TO " ".JOIN(textword[i])
+
+
+
+    SET target TO data.iloc[:, 0]
+
+
+
+    #OUTPUT(textword)
+
+
+
+    SET cv TO COUNTVECTORIZER()
+
+
+
+    SET X_cv TO cv.FIT&TRANSFORM(textword)
+
+
+
+    SET kmers TO cv.GET_FEATURE_NAMES_OUT()
+
+
+
+    OUTPUT(pd.DataFrame(X_cv.TOARRAY(), columns=kmers).HEAD())
+
+
+
+    SET vec TO TFIDF()
+
+
+
+    SET tfiDataFrame TO vec.FIT(textword)
+
+
+
+    SET theX1 TO tfiDataFrame.TRANSFORM(textword)
+
+
+
+    OUTPUT(pd.DataFrame(theX1.TOARRAY(), COLUMNS=kmers).HEAD())
+
+
+
+    SET TRANSFORMer TO TfiDataFrameTransformer()
+
+
+
+    SET training_tfiDataFrame TO TRANSFORMer.FIT&TRANSFORM(X_cv)
+
+
+
+    OUTPUT(pd.DataFrame(training_tfiDataFrame.TOARRAY(), COLUMNS=kmers).HEAD())
+
+
+
+
+
+    SET X_train, X_test, Y_train, Y_test TO TRAIN_TEST_SPLIT(X_cv, target, TEST_SIZE=0.2, RANDOM_STATE=420)
+
+    # OUTPUT("----------------------------X Test------------------------------")
+
+    # OUTPUT(X_test)
+
+
+
+
+
+
+
+
+
+    SET clASsifier TO MULTINOMIALNB(alpha=0.1)
+
+    clASsifier.FIT(X_train, Y_train)
+
+
+
+    SET y_pred TO CLASSIFIER.PREDICT(X_test)
+
+
+
+    OUTPUT(Y_test)
+
+    OUTPUT("Prediction Analysis")
+
+    SET accuracy TO OUTPUTMetrics(Y_test, y_pred)
+
+
+
+    RETURN accuracy
+
+
+
+
+
+DEFINE FUNCTION LEARNING_CURVE():
+
+    SET data_size TO np.ARANGE(10,10011, 1000)
+
+    SET accuracy_array TO []
+
+    FOR i IN RANGE(LENGTH(data_size)):
+
+        SET temp_acc TO train_model(DATA_SET_SIZE= data_size[i])
+
+        accuracy_array.APPEND(temp_acc)
+
+        OUTPUT(LENGTH(data_size))
+
+        OUTPUT(LENGTH(accuracy_array))
+
+
+
+    PLOT.plot(data_size, accuracy_array)
+
+    PLOT.XLABEL('No of DataPoints')
+
+    PLOT.YLABEL('Training Accuracy')
+
+    PLOT.PLOT()
+
+    PLOT.SHOW()
+
+
+
+
+
+LEARNING_CURVE()
