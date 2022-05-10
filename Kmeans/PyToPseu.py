@@ -7,7 +7,7 @@ Make sure to put
 as a comment at the end of lines that contain a function call that don't also contain an assignment (=).
 '''
 
-python_file = 'Chi2.py'
+python_file = 'sk_learn_model_training.py'
 
 basic_conversion_rules = {"for": "FOR", "=": "TO", "if": "IF", "==": "EQUALS", "while": "WHILE", "until": "UNTIL",
                           "import": "IMPORT", "class": "DEFINE CLASS", "def": "DEFINE FUNCTION", "else:": "ELSE:",
@@ -20,7 +20,11 @@ advanced_conversion_rules = {"print": "OUTPUT", "return": "RETURN", "input": "IN
                              "legend": "LEGEND", "fit_transform": "FIT&TRANSFORM", "transform": "TRANSFORM", "color": "COLOR", "label": "LABEL",
                              "fit": "FIT", "append": "APPEND", "sklearn": "SKLEARN", "pandas": "PANDAS", "preprocessing": "PREPROCESSING",
                              "matplotlib": "MATPLOTLIB", "pyplot": "PYPLOT", "marker": "MARKER", "model_selection": "MODEL_SELECTION",
-                             "train_test_split": "TRAIN_TEST_SPLIT","chi2": "CHI2"}
+                             "train_test_split": "TRAIN_TEST_SPLIT","chi2": "CHI2", "feature_extraction": "FEATURE_EXTRACTION", "CountVectorizer": "COUNTVECTORIZER",
+                             "cross_val_score": "CROSS_VAL_SCORE", "metrics": "METRICS", "accuracy_score": "ACCURACY_SCORE", "recall_score": "RECALL_SCORE", "f1_score": "F1_SCORE",
+                             "precision_score": "PRECISION_SCORE", "confusion_matrix": "CONFUSION_MATRIX", "validation_curve": "VALIDATION_CURVE", "learning_curve": "LEARNING_CURVE",
+                             "naive_bayes": "NAIVE_BAYES", "MultinomialNB": "MULTINOMIALNB", "average": "AVERAGE", "lower": "LOWER", "drop": "DROP", "list": "LIST", "get_feature_names_out": "GET_FEATURE_NAMES_OUT",
+                             }
 
 
 def l2pseudo(to_pseudo):
