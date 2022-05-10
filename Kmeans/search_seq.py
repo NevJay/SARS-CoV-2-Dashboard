@@ -1,0 +1,12 @@
+import pandas as pd
+
+df = pd.read_csv('output2.csv')
+
+
+j = 0
+for i in df["Sequence"].tolist():
+    #print(i)
+    if (i == "ATGTTTCATCTCGTTGACTTTCAGGTTACTATAGCAGAGATATTACTAATTATTATGAGGACTTTTAAAGTTTCCATTTGGAATCTTGATTACATCATAAACCTCATAATTAAAAATTTATCTAAGTCACTAACTGAGAATAAATATTCTCAATTAGATGAAGAGCAACCAATGGAGATTGATTA"):
+        print("found")
+        j = j + 1
+print(j)

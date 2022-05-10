@@ -85,6 +85,7 @@ def train_model(data_set_size):
     classifier.fit(X_train, Y_train)
 
     y_pred = classifier.predict(X_test)
+    print(y_pred)
 
     print(Y_test)
     print("Prediction Analysis")
