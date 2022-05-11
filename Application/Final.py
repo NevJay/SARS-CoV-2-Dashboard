@@ -23,7 +23,7 @@ from sklearn.metrics import accuracy_score
 
 def make_window(theme):
     sg.theme(theme)
-    layout = [[sg.Text('Please Select A Theme',font='Cooper')],[sg.Combo(sg.theme_list(), default_value=theme, enable_events=True, key='-THEMES-'),sg.Button('ok',border_width=4,font='Cooper')]]
+    layout = [[sg.Text('Please Select A Theme',font='Cooper')],[sg.Combo(sg.theme_list(), default_value=theme, enable_events=True, key='-THEMES-'),sg.Button('ok',border_width=0,font='Cooper')]]
     return sg.Window('Theme', layout, finalize=True,size=(240,80))
 
 def theme():
@@ -39,21 +39,21 @@ def theme():
             # sg.theme('Dark2')
             img = sg.Image(filename='covid1.png', key='Covid',size=(500,500))
             main_layout = [[sg.Text('What do you want to do?',font='Cooper')],
-                           [sg.Button('sign-up', size=(8, 1),border_width=4,font='Cooper'), sg.Button('login', size=(8, 1),border_width=4,font='Cooper')],[img]]
+                           [sg.Button('sign-up', size=(8, 1),border_width=0,font='Cooper'), sg.Button('login', size=(8, 1),border_width=0,font='Cooper')],[img]]
             img2 = sg.Image(filename='covid1.png', key='Covid', size=(450, 400))
             login_layout = [
-                [sg.Text('username',font='Cooper'), sg.Input(key='username',size=30)],
-                [sg.Text('password',font='Cooper'), sg.Input(password_char='*', key='password',size=30)],
-                [sg.Button('sign-up',border_width=4,font='Cooper'), sg.Button('login', bind_return_key=True,border_width=4,font='Cooper')],[img2]]
+                [sg.Text('username',font='Cooper'), sg.Input(key='username',size=40)],
+                [sg.Text('password',font='Cooper'), sg.Input(password_char='*', key='password',size=40)],
+                [sg.Button('sign-up',border_width=0,font='Cooper'), sg.Button('login', bind_return_key=True,border_width=0,font='Cooper')],[img2]]
             img3 = sg.Image(filename='covid1.png', key='Covid', size=(450, 400))
             signup_layout = [
                 [sg.Text('username',font='Cooper'), sg.Input(key='username')],
                 [sg.Text('email',font='Cooper'), sg.Input(key='email')],
                 [sg.Text('password',font='Cooper'), sg.Input(password_char='*', key='password')],
-                [sg.Button('Login',border_width=4,font='Cooper'), sg.Button('sign-up', bind_return_key=True,border_width=4,font='Cooper')],[img3]]
+                [sg.Button('Login',border_width=0,font='Cooper'), sg.Button('sign-up', bind_return_key=True,border_width=0,font='Cooper')],[img3]]
 
             main_window = sg.Window('Main Menu', main_layout, element_justification='center', size=(500, 500))
-            login_window = sg.Window('Login', login_layout, element_justification='center')
+            login_window = sg.Window('Login', login_layout, element_justification='right')
             signup_window = sg.Window('Create Account', signup_layout,element_justification='right')
 
             # ---- APPLICATION FUNCTIONS ------------------------------------------------#
@@ -96,10 +96,10 @@ def theme():
 
             def win_Plots():
                 layout = [[
-                    sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button("CLUSTERED DATA", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button("DATA ANALYSIS", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button("ABOUT", size=(15, 2),border_width=4,font='Cooper')], [sg.Button('EXIT', size=(15, 2),border_width=4,font='Cooper')]],
+                    sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERED DATA", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("DATA ANALYSIS", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("ABOUT", size=(15, 2),border_width=0,font='Cooper')], [sg.Button('EXIT', size=(15, 2),border_width=0,font='Cooper')]],
                              title="Please Select One", relief=sg.RELIEF_GROOVE,font='Cooper')]]
                 window = sg.Window('Genetrix', layout, margins=(100, 50))
                 while True:
@@ -111,7 +111,7 @@ def theme():
                         # set the theme for the screen/window
                         sg.theme("LightBlue")
                         # define layout
-                        layout = [[sg.ProgressBar(50, orientation='h', size=(20, 20), border_width=4, key='progbar',bar_color=['Red', 'Green'])]]
+                        layout = [[sg.ProgressBar(50, orientation='h', size=(20, 20), border_width=0, key='progbar',bar_color=['Red', 'Green'])]]
                         # Define Window
                         window = sg.Window("Progress Bar", layout)
                         # Read  values entered by user
@@ -146,7 +146,7 @@ def theme():
                         layout = [[sg.Text('Kmeans clustering of SARS-CoV-2 mutations',font='Cooper')],
                                   [sg.Text("Choose a file: ",font='Cooper'), sg.FileBrowse(key="-IN-",button_text='Import Dataset',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot",border_width=4,font='Cooper'), sg.Button("Clear",border_width=4,font='Cooper'), sg.Button("Back",border_width=4,font='Cooper')]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -194,7 +194,7 @@ def theme():
 
                             elif event == "Back":
                                 window.close()
-                                win_Analysis()
+                                win_Plots()
 
                             elif event == "Clear":
                                 ax.cla()
@@ -222,11 +222,11 @@ def theme():
 
             def win_Analysis():
                 layout = [[
-                    sg.Frame(layout=[[sg.Button("BARPLOT", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button("CLUSTERPLOT", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button("CLUSTERS BASED ON LOCATIONS", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button("CLUSTERS BASED ON GENE NAME", size=(15, 2),border_width=4,font='Cooper')],
-                                     [sg.Button('BACK', size=(15, 2),border_width=4,font='Cooper')]], title="Analysis", relief=sg.RELIEF_GROOVE,font='Cooper')]]
+                    sg.Frame(layout=[[sg.Button("BARPLOT", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERPLOT", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERS BASED ON LOCATIONS", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERS BASED ON GENE NAME", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button('BACK', size=(15, 2),border_width=0,font='Cooper')]], title="Analysis", relief=sg.RELIEF_GROOVE,font='Cooper')]]
                 window = sg.Window('Genetrix', layout, margins=(100, 50))
                 while True:
                     event, values = window.Read()
@@ -257,7 +257,7 @@ def theme():
                                   [sg.Text("Choose a file: ",font='Cooper'),
                                    sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot",border_width=4,font='Cooper'), sg.Button("Clear",border_width=4,font='Cooper'), sg.Button("Back",border_width=4,font='Cooper')]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -338,7 +338,7 @@ def theme():
                                   [sg.Text("Choose a file: ",font='Cooper'),
                                    sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot",border_width=4,font='Cooper'), sg.Button("Clear",border_width=4,font='Cooper'), sg.Button("Back",border_width=4,font='Cooper')]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -424,7 +424,7 @@ def theme():
                                   [sg.Text("Choose a file: "),
                                    sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot",border_width=4,font='Cooper'), sg.Button("Clear",border_width=4,font='Cooper'), sg.Button("Back",border_width=4,font='Cooper')]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -514,7 +514,7 @@ def theme():
                                   [sg.Text("Choose a file: "),
                                    sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot",border_width=4,font='Cooper'), sg.Button("Clear",border_width=4,font='Cooper'), sg.Button("Back",border_width=4,font='Cooper')]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
