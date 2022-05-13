@@ -1,9 +1,17 @@
+import tkinter
 from tkinter import *
 import sqlite3
 import tkinter.messagebox as mb
 from tkinter import *
 import sqlite3
 import tkinter.messagebox as mb
+from tkinter import filedialog
+
+import customtkinter
+import tk as tk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,NavigationToolbar2Tk)
+import pandas as pd
 
 def showPassword(event):
 	wdgt = event.widget
@@ -24,7 +32,7 @@ class LabeledEntry(LabelFrame):
 
 	def __init__(self, master, lbltext, err_msg, imglcn=None, *args, **kwargs):
 		LabelFrame.__init__(self, master, *args, **kwargs)
-		self.config(bd=0, text=lbltext)
+		self.config(bd=0, text=lbltext,fg='white')
 
 		self.lbltext = lbltext
 		self.err_msg = err_msg
@@ -35,7 +43,7 @@ class LabeledEntry(LabelFrame):
 		self.ico = PhotoImage(file=imglcn)
 		self.imglbl = Label(self, bd=0, image=self.ico, **kwargs)
 
-		self.entry = Entry(self, bd=0, width=35, font=('', 12), textvariable=self.Entry_var, bg='#2bc878')
+		self.entry = Entry(self, bd=0, width=35, font=('', 12), textvariable=self.Entry_var, bg='#221a1a',fg='white')
 		# frame draws a line just below entry
 		self.line = Frame(self, bd=0, width=50, height=2, bg='black')
 		# id any error occurs use this to deiplay
@@ -76,9 +84,9 @@ class LoginPage(Frame):
 		Label(self, image=self.bg).pack()
 
 		# take id input and password
-		self._id = LabeledEntry(self, 'Your first name here.', '', 'users.png', **{'bg': '#2bc87c'})
+		self._id = LabeledEntry(self,'Your first name here.', '', 'users.png', **{'bg': '#221a1a'})
 		self._id.place(x=40, y=300)
-		self.psw = LabeledEntry(self, 'Password', '', 'users.png', **{'bg': '#2bc87c'})
+		self.psw = LabeledEntry(self, 'Password', '', 'users.png', **{'bg': '#221a1a'})
 		self.psw.entry['show'] = '*'  # hiide typing charcters
 		self.psw.place(x=40, y=390)
 		# show password
@@ -86,11 +94,12 @@ class LoginPage(Frame):
 		# on release
 		self.psw.entry.bind("<ButtonRelease-3>", hidePassword)
 		# login button
-		self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0)
-		self.login_btn.place(x=3, y=480)
+
+		self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+		self.login_btn.place(x=3, y=490)
 		# register button
-		self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0)
-		self.register_btn.place(x=300, y=560)
+		self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+		self.register_btn.place(x=305, y=568)
 
 # register page interface for the app
 class RegisterPage(Frame):
@@ -106,7 +115,7 @@ class RegisterPage(Frame):
 		Label(self, image=self.bg).pack()
 
 		# take id input and password
-		default = {'bg': '#2bc87c'}
+		default = {'bg': '#221a1a'}
 		self.fname = LabeledEntry(self, 'First name', '', 'users.png', **default)
 		# lower the width of entry
 		self.fname.entry['width'] = 15
@@ -133,11 +142,11 @@ class RegisterPage(Frame):
 		self.retype_psw.entry.bind("<ButtonRelease-3>", hidePassword)
 
 		# login button
-		self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0)
-		self.register_btn.place(x=3, y=480)
-		# register btn
-		self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0)
-		self.login_btn.place(x=300, y=560)
+		self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+		self.login_btn.place(x=3, y=490)
+		# register button
+		self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+		self.register_btn.place(x=305, y=568)
 
 	def on_register(self):
 		a = self.fname.Entry_var.get().strip()  # remove spaces before and after usinf strip()
@@ -230,34 +239,200 @@ class mainApp(Tk):
 				if ask:
 					self.goto_registerPage()
 			else:
+				Analysis()
 
-				root = Tk()
-				root.geometry("465x708")
-				root.resizable(False, False)
-				root["bg"] = "#2bc87c"
-				root.title("Sign-in/Register")
 
-				def rootexit():
-					root.destroy()
+def Analysis():
+	global root
+	root = Tk()
+	root.geometry("465x708")
+	root.resizable(False, False)
+	root["bg"] = "#221a1a"
+	root.title("Main Menue")
 
-				def nextwindow():
-					win = Tk()
-					# Set the geometry of tkinter frame
-					win.geometry("700x400")
-					# Create a text widget and wrap by words
-					text = Text(win, wrap=WORD)
-					text.insert(INSERT,"SARS-CoV-2-Dashboard \n \n The rapid spread of the coronavirus disease 2019 (COVID19) pandemic, which was caused by the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) coronavirus, has resulted in 95,932,739 confirmed cases. As of January 20, 2021, there had been 2 054 853 cases and 2,054, 853 fatalities. In the twenty-first century, there have been three significant outbreaks of fatal pneumonia this century. SARS-CoV (2002), Middle East, caused by b-coronaviruses MERS-CoV (respiratory syndrome coronavirus) (2012), and SARS-CoV-2 is a virus that causes SARS (2019). Clustering is a Machine Learning Technique that involves the grouping of data points. Given a set of data points, researchers can use a clustering algorithm to classify each data point into a specific group. Creating mutation clusters which depend on certain features of the virus will be easier using clustering algorithms. There is much research conducted regarding mutation clustering (other types of viruses and diseases) following few of them directly regarding SARS CoV-2 mutations. In this research, researchers try to go beyond gene-based clustering of CoV-2 mutations to predict the manner Covid-19 mutates next using analytical techniques.")
-					text.pack()
-					win.mainloop()
+	Label(root, text="Welcome To Genetrix", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
+	customtkinter.CTkButton(root, text="PREDICTED DATA", bd=0, height=50, width=285, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22,)).place(x=100, y=170)
+	customtkinter.CTkButton(root, text="CLUSTERED DATA", bd=0, height=50, width=60, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22)).place(x=100, y=240)
+	customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=Graphs).place(x=100, y=310)
+	customtkinter.CTkButton(root, text="ABOUT", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=nextwindow).place(x=100, y=380)
+	customtkinter.CTkButton(root, text="EXIT", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=root.destroy).place(x=100, y=450)
 
-				Label(root, text="Welcome To Genetrix", bg="black",fg="white", font=("monospace", 20, "bold"), width=40, bd=4, relief=RIDGE).pack(side=TOP,fill=X)
-				Button(root, text="PREDICTED DATA", font=('arial', 22), width=17, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0,).place(x=90, y=170)
-				Button(root, text="CLUSTERED DATA", font=('arial', 22), width=17, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0).place(x=90, y=240)
-				Button(root, text="DATA ANALYSIS", font=('arial', 22), width=17, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0).place(x=90, y=310)
-				Button(root, text="ABOUT", font=('arial', 22), width=17, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0,command=nextwindow).place(x=90,y=380)
-				Button(root, text="EXIT", font=('arial', 22), width=17, fg='#2bc87c', bg='#020e52',activebackground='#020e52', bd=0,command=rootexit).place(x=90, y=450)
+	root.mainloop()
 
-				root.mainloop()
+def Graphs():
+	root.destroy()
+	global root2
+	root2 = Tk()
+	root2.geometry("540x708")
+	root2.resizable(False, False)
+	root2["bg"] = "#221a1a"
+	root2.title("Genetrix")
+
+	Label(root2, text="Welcome To Genetrix Plots", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
+	customtkinter.CTkButton(root2, text="BARPLOT", bd=0, height=50, width=510, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22,), command=BarPlot).place(x=18, y=170)
+	customtkinter.CTkButton(root2, text="CLUSTERPLOT", bd=0, height=50, width=510, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=ClusterPlot).place(x=18, y=240)
+	customtkinter.CTkButton(root2, text="CLUSTERS BASED ON LOCATIONS", bd=0, height=50, width=284, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22)).place(x=18, y=310)
+	customtkinter.CTkButton(root2, text="CLUSTERS BASED ON GENE NAME", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22)).place(x=18, y=380)
+	customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=515, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=MainBack).place(x=18, y=450)
+
+	root2.mainloop()
+
+def MainBack():
+	root2.destroy()
+	Analysis()
+
+
+def BarPlot():
+	root2.destroy()
+	def plot():
+		# the figure that will contain the plot
+		fig = Figure(figsize=(15, 6), dpi=100)
+
+		df_a = pd.read_csv("output1.csv")
+		df_a.head(2)
+
+		df_v = pd.read_csv("output2.csv")
+		df_v.head(2)
+
+		df = pd.merge(df_a, df_v, left_index=True, right_index=True)
+		df.head(2)
+
+		location = df["Location"]
+		location = pd.DataFrame(location)
+		location = pd.DataFrame(location.value_counts().sort_index()).reset_index()
+		location.columns = ["Location", "Total Cases"]
+		# print(location.value_counts().sum)
+
+		len(df_v.index)
+
+		# adding the subplot
+		plot1 = fig.add_subplot(111)
+
+		# plotting the graph
+		plot1.bar(location["Location"], location["Total Cases"])
+		plot1.set_title('Number of Mutations based on Location')
+		plot1.set_xlabel('Location')
+		plot1.set_ylabel('Number of Mutations')
+		plot1.set_xticklabels(location["Location"], rotation=25, fontsize=6)
+
+		# creating the Tkinter canvas
+		# containing the Matplotlib figure
+		canvas = FigureCanvasTkAgg(fig, master=window)
+		canvas.draw()
+
+		# placing the canvas on the Tkinter window
+		canvas.get_tk_widget().pack()
+
+		# creating the Matplotlib toolbar
+		toolbar = NavigationToolbar2Tk(canvas, window)
+		toolbar.update()
+
+		# placing the toolbar on the Tkinter window
+		canvas.get_tk_widget().pack()
+
+	def BarplotBack():
+		window.destroy()
+		Analysis()
+
+
+	# the main Tkinter window
+	window = Tk()
+
+	# setting the title
+	window.title('Plotting in Tkinter')
+
+	# dimensions of the main window
+	window.geometry("1500x750")
+
+	# button that displays the plot
+	plot_button = Button(master=window, command=plot, height=2, width=10, text="Plot")
+	plot_button2 = Button(master=window, command=BarplotBack, height=2, width=10, text="Back")
+
+	# place the button
+	# in main window
+	plot_button.pack()
+	plot_button2.pack()
+	# run the gui
+	window.mainloop()
+
+def ClusterPlot():
+	root2.destroy()
+	def plot():
+		# the figure that will contain the plot
+		fig = Figure(figsize=(15, 6), dpi=100)
+
+		df_a = pd.read_csv("output1.csv")
+		df_a.head(2)
+
+		df_v = pd.read_csv("output2.csv")
+		df_v.head(2)
+
+		df = pd.merge(df_a, df_v, left_index=True, right_index=True)
+		df.head(2)
+
+		cluster = df["Cluster"]
+		cluster = pd.DataFrame(cluster)
+		cluster = pd.DataFrame(cluster.value_counts().sort_index()).reset_index()
+		cluster.columns = ["Cluster", "Count"]
+		cluster
+
+		# adding the subplot
+		plot1 = fig.add_subplot(111)
+
+		# plotting the graph
+		plot1.bar(cluster["Cluster"], cluster["Count"])
+		plot1.set_title('ClusterPlot')
+		plot1.set_xlabel('Location')
+		plot1.set_ylabel('Count')
+
+		# creating the Tkinter canvas
+		# containing the Matplotlib figure
+		canvas = FigureCanvasTkAgg(fig, master=window3)
+		canvas.draw()
+
+		# placing the canvas on the Tkinter window
+		canvas.get_tk_widget().pack()
+
+		# creating the Matplotlib toolbar
+		toolbar = NavigationToolbar2Tk(canvas, window3)
+		toolbar.update()
+
+		# placing the toolbar on the Tkinter window
+		canvas.get_tk_widget().pack()
+	def BarplotBack():
+		window3.destroy()
+		Analysis()
+
+	# the main Tkinter window
+	window3 = Tk()
+
+	# setting the title
+	window3.title('Plotting in Tkinter')
+
+	# dimensions of the main window
+	window3.geometry("1500x750")
+
+	# button that displays the plot
+	plot_button = Button(master=window3, command=plot, height=2, width=10, text="Plot")
+	plot_button2 = Button(master=window3, height=2, width=10, text="Back",command=BarplotBack)
+
+	# place the button
+	# in main window
+	plot_button.pack()
+	plot_button2.pack()
+	# run the gui
+	window3.mainloop()
+
+def nextwindow():
+	win = Tk()
+	# Set the geometry of tkinter frame
+	win.geometry("700x400")
+	# Create a text widget and wrap by words
+	text = Text(win, wrap=WORD)
+	text.insert(INSERT,"SARS-CoV-2-Dashboard \n \n The rapid spread of the coronavirus disease 2019 (COVID19) pandemic, which was caused by the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) coronavirus, has resulted in 95,932,739 confirmed cases. As of January 20, 2021, there had been 2 054 853 cases and 2,054, 853 fatalities. In the twenty-first century, there have been three significant outbreaks of fatal pneumonia this century. SARS-CoV (2002), Middle East, caused by b-coronaviruses MERS-CoV (respiratory syndrome coronavirus) (2012), and SARS-CoV-2 is a virus that causes SARS (2019). Clustering is a Machine Learning Technique that involves the grouping of data points. Given a set of data points, researchers can use a clustering algorithm to classify each data point into a specific group. Creating mutation clusters which depend on certain features of the virus will be easier using clustering algorithms. There is much research conducted regarding mutation clustering (other types of viruses and diseases) following few of them directly regarding SARS CoV-2 mutations. In this research, researchers try to go beyond gene-based clustering of CoV-2 mutations to predict the manner Covid-19 mutates next using analytical techniques.")
+	text.pack()
+	win.mainloop()
+
 #run
 
 App = mainApp()
