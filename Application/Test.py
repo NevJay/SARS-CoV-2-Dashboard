@@ -19,11 +19,9 @@ warnings.filterwarnings("ignore")
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-
 # ---- APPLICATION GUI LAYOUT ---------------------------------------------- #
-main_layout = [
-    [sg.Text('What do you want to do?')],
-    [sg.Button('login', size=(8,1)), sg.Button('sign-up', size=(8,1))]]
+#sg.theme('Dark2')
+main_layout = [[sg.Text('What do you want to do?')],[sg.Button('sign-up', size=(8,1)), sg.Button('login', size=(8,1))]]
 
 login_layout = [
     [sg.Text('username'), sg.Input(key='username')],
@@ -36,7 +34,7 @@ signup_layout = [
     [sg.Text('password'), sg.Input(password_char='*', key='password')],
     [sg.Button('Login'), sg.Button('sign-up', bind_return_key=True)]]
 
-main_window = sg.Window('Main Menu', main_layout, element_justification='center',size=(200,80))
+main_window = sg.Window('Main Menu', main_layout, element_justification='center',size=(250,80))
 login_window = sg.Window('Login', login_layout, element_justification='right')
 signup_window = sg.Window('Create Account', signup_layout, element_justification='right')
 
@@ -83,14 +81,31 @@ def win_Plots():
     layout = [[
         sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2))],
                          [sg.Button("CLUSTERED DATA", size=(15, 2))],[sg.Button("DATA ANALYSIS", size=(15, 2))],
-                         [sg.Button("ABOUT", size=(15, 2))],[sg.Button('EXIT',size=(15, 2))]],title="Plots",relief=sg.RELIEF_GROOVE)]]
+                         [sg.Button("ABOUT", size=(15, 2))],[sg.Button('EXIT',size=(15, 2))]],title="Please Select One",relief=sg.RELIEF_GROOVE)]]
     window = sg.Window('Genetrix', layout, margins=(100, 50))
     while True:
         event, values = window.Read()
         if event == "EXIT":
             window.close()
         elif event == "PREDICTED DATA":
-            sg.Popup('PREDICTED DATA page')
+            window.close()
+            # set the theme for the screen/window
+            sg.theme("LightBlue")
+            # define layout
+            layout = [[sg.ProgressBar(50, orientation='h', size=(20, 20), border_width=4, key='progbar',bar_color=['Red', 'Green'])]]
+            # Define Window
+            window = sg.Window("Progress Bar", layout)
+            # Read  values entered by user
+            i = 0
+            k = 15
+            val = 0
+            for i in range(k):
+                event, values = window.read(timeout=100)
+                # update prograss bar value
+                val = val + 100 / (k - i)
+                window['progbar'].update_bar(val)
+            window.close()
+            sg.Popup("Predicted Data")
         elif event == "CLUSTERED DATA":
             window.close()
             # Functions to prevent GUI blurring
@@ -171,8 +186,6 @@ def win_Plots():
         elif event == "DATA ANALYSIS":
             window.close()
             win_Analysis()
-        elif event == "PREDICTED DATA":
-            sg.Popup('PREDICTED DATA page')
         elif event == "ABOUT":
             filename = 'hello.txt'
             if Path(filename).is_file():
@@ -550,29 +563,32 @@ def popup_text(filename, text):
 
 # ---- MAIN EVENT LOOP ----------------------------------------------------- #
 create_db()
-
-while True:
-    event, values = main_window.read()
-    if event in (None, 'Cancel'):
-        break
-    if event == 'login':
-        main_window.close()
-        log_event, log_values = login_window.read()
-        if log_event == 'login':
-            login(log_values)
+def main():
+    while True:
+        event, values = main_window.read()
+        if event in (None, 'Cancel'):
             break
-        elif log_event == 'sign-up':
-            login_window.close()
-            sign_event, sign_values = signup_window.read()
-    if event == 'sign-up':
-        main_window.close()
-        sign_event, sign_values = signup_window.read()
-        if sign_event == 'sign-up':
-            signup(sign_values)
-            break
-        elif sign_event =='Login':
-            signup_window.close()
+        if event == 'login':
+            main_window.close()
             log_event, log_values = login_window.read()
+            if log_event == 'login':
+                login(log_values)
+                break
+            elif log_event == 'sign-up':
+                login_window.close()
+                sign_event, sign_values = signup_window.read()
+        if event == 'sign-up':
+            main_window.close()
+            sign_event, sign_values = signup_window.read()
+            if sign_event == 'sign-up':
+                signup(sign_values)
+                break
+            elif sign_event =='Login':
+                signup_window.close()
+                log_event, log_values = login_window.read()
+
+main()
+
 
 
 

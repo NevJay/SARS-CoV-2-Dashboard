@@ -23,9 +23,8 @@ from sklearn.metrics import accuracy_score
 
 def make_window(theme):
     sg.theme(theme)
-    layout = [[sg.Text('Please Select A Theme')],[sg.Combo(sg.theme_list(), default_value=theme, enable_events=True, key='-THEMES-')],[sg.Button('ok')]]
-
-    return sg.Window('Main', layout, finalize=True,size=(200,100))
+    layout = [[sg.Text('Please Select A Theme',font='Cooper')],[sg.Combo(sg.theme_list(), default_value=theme, enable_events=True, key='-THEMES-'),sg.Button('ok',border_width=0,font='Cooper')]]
+    return sg.Window('Theme', layout, finalize=True,size=(240,80))
 
 def theme():
     window = make_window('Python')
@@ -38,23 +37,24 @@ def theme():
             window.close()
             # ---- APPLICATION GUI LAYOUT ---------------------------------------------- #
             # sg.theme('Dark2')
-            main_layout = [[sg.Text('What do you want to do?')],
-                           [sg.Button('sign-up', size=(8, 1)), sg.Button('login', size=(8, 1))]]
-
+            img = sg.Image(filename='covid1.png', key='Covid',size=(500,500))
+            main_layout = [[sg.Text('What do you want to do?',font='Cooper')],
+                           [sg.Button('sign-up', size=(8, 1),border_width=0,font='Cooper'), sg.Button('login', size=(8, 1),border_width=0,font='Cooper')],[img]]
+            img2 = sg.Image(filename='covid1.png', key='Covid', size=(450, 400))
             login_layout = [
-                [sg.Text('username'), sg.Input(key='username')],
-                [sg.Text('password'), sg.Input(password_char='*', key='password')],
-                [sg.Button('sign-up'), sg.Button('login', bind_return_key=True)]]
-
+                [sg.Text('username',font='Cooper'), sg.Input(key='username',size=40)],
+                [sg.Text('password',font='Cooper'), sg.Input(password_char='*', key='password',size=40)],
+                [sg.Button('sign-up',border_width=0,font='Cooper'), sg.Button('login', bind_return_key=True,border_width=0,font='Cooper')],[img2]]
+            img3 = sg.Image(filename='covid1.png', key='Covid', size=(450, 400))
             signup_layout = [
-                [sg.Text('username'), sg.Input(key='username')],
-                [sg.Text('email'), sg.Input(key='email')],
-                [sg.Text('password'), sg.Input(password_char='*', key='password')],
-                [sg.Button('Login'), sg.Button('sign-up', bind_return_key=True)]]
+                [sg.Text('username',font='Cooper'), sg.Input(key='username')],
+                [sg.Text('email',font='Cooper'), sg.Input(key='email')],
+                [sg.Text('password',font='Cooper'), sg.Input(password_char='*', key='password')],
+                [sg.Button('Login',border_width=0,font='Cooper'), sg.Button('sign-up', bind_return_key=True,border_width=0,font='Cooper')],[img3]]
 
-            main_window = sg.Window('Main Menu', main_layout, element_justification='center', size=(250, 80))
+            main_window = sg.Window('Main Menu', main_layout, element_justification='center', size=(500, 500))
             login_window = sg.Window('Login', login_layout, element_justification='right')
-            signup_window = sg.Window('Create Account', signup_layout, element_justification='right')
+            signup_window = sg.Window('Create Account', signup_layout,element_justification='right')
 
             # ---- APPLICATION FUNCTIONS ------------------------------------------------#
             def create_db():
@@ -76,7 +76,8 @@ def theme():
                     login_window.close()
                     win_Plots()
                 else:
-                    sg.popup_error('Invalid username or password')
+                    sg.popup('Invalid username or password',font='Cooper')
+
 
             def signup(values):
                 ''' create user accounts based on supplied parameters, if account does not already exist '''
@@ -95,11 +96,11 @@ def theme():
 
             def win_Plots():
                 layout = [[
-                    sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2))],
-                                     [sg.Button("CLUSTERED DATA", size=(15, 2))],
-                                     [sg.Button("DATA ANALYSIS", size=(15, 2))],
-                                     [sg.Button("ABOUT", size=(15, 2))], [sg.Button('EXIT', size=(15, 2))]],
-                             title="Please Select One", relief=sg.RELIEF_GROOVE)]]
+                    sg.Frame(layout=[[sg.Button("PREDICTED DATA", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERED DATA", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("DATA ANALYSIS", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("ABOUT", size=(15, 2),border_width=0,font='Cooper')], [sg.Button('EXIT', size=(15, 2),border_width=0,font='Cooper')]],
+                             title="Please Select One", relief=sg.RELIEF_GROOVE,font='Cooper')]]
                 window = sg.Window('Genetrix', layout, margins=(100, 50))
                 while True:
                     event, values = window.Read()
@@ -110,8 +111,7 @@ def theme():
                         # set the theme for the screen/window
                         sg.theme("LightBlue")
                         # define layout
-                        layout = [[sg.ProgressBar(50, orientation='h', size=(20, 20), border_width=4, key='progbar',
-                                                  bar_color=['Red', 'Green'])]]
+                        layout = [[sg.ProgressBar(50, orientation='h', size=(20, 20), border_width=0, key='progbar',bar_color=['Red', 'Green'])]]
                         # Define Window
                         window = sg.Window("Progress Bar", layout)
                         # Read  values entered by user
@@ -124,7 +124,7 @@ def theme():
                             val = val + 100 / (k - i)
                             window['progbar'].update_bar(val)
                         window.close()
-                        sg.Popup("Predicted Data")
+                        sg.Popup("Predicted Data",font='Cooper')
                     elif event == "CLUSTERED DATA":
                         window.close()
 
@@ -143,10 +143,10 @@ def theme():
                             return figure_canvas_agg
 
                         # Layout creation
-                        layout = [[sg.Text('Kmeans clustering of SARS-CoV-2 mutations')],
-                                  [sg.Text("Choose a file: "), sg.FileBrowse(key="-IN-", button_text='Import Dataset')],
+                        layout = [[sg.Text('Kmeans clustering of SARS-CoV-2 mutations',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'), sg.FileBrowse(key="-IN-",button_text='Import Dataset',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -194,7 +194,7 @@ def theme():
 
                             elif event == "Back":
                                 window.close()
-                                win_Analysis()
+                                win_Plots()
 
                             elif event == "Clear":
                                 ax.cla()
@@ -208,7 +208,7 @@ def theme():
                         window.close()
                         win_Analysis()
                     elif event == "ABOUT":
-                        filename = 'hello.txt'
+                        filename = 'about.txt'
                         if Path(filename).is_file():
                             try:
                                 with open(filename, "rt", encoding='utf-8') as f:
@@ -222,11 +222,11 @@ def theme():
 
             def win_Analysis():
                 layout = [[
-                    sg.Frame(layout=[[sg.Button("BARPLOT", size=(15, 2))],
-                                     [sg.Button("CLUSTERPLOT", size=(15, 2))],
-                                     [sg.Button("CLUSTERS BASED ON LOCATIONS", size=(15, 2))],
-                                     [sg.Button("CLUSTERS BASED ON GENE NAME", size=(15, 2))],
-                                     [sg.Button('BACK', size=(15, 2))]], title="Analysis", relief=sg.RELIEF_GROOVE)]]
+                    sg.Frame(layout=[[sg.Button("BARPLOT", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERPLOT", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERS BASED ON LOCATIONS", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button("CLUSTERS BASED ON GENE NAME", size=(15, 2),border_width=0,font='Cooper')],
+                                     [sg.Button('BACK', size=(15, 2),border_width=0,font='Cooper')]], title="Analysis", relief=sg.RELIEF_GROOVE,font='Cooper')]]
                 window = sg.Window('Genetrix', layout, margins=(100, 50))
                 while True:
                     event, values = window.Read()
@@ -251,13 +251,13 @@ def theme():
                             return figure_canvas_agg
 
                         # Layout creation
-                        layout = [[sg.Text('BarPlot of SARS-CoV-2 mutations')],
-                                  [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
-                                  [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
+                        layout = [[sg.Text('BarPlot of SARS-CoV-2 mutations',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'),
+                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'),
+                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -332,13 +332,13 @@ def theme():
                             return figure_canvas_agg
 
                         # Layout creation
-                        layout = [[sg.Text('CLUSTERPLOT of SARS-CoV-2 mutations')],
-                                  [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
-                                  [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
+                        layout = [[sg.Text('CLUSTERPLOT of SARS-CoV-2 mutations',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'),
+                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'),
+                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -418,13 +418,13 @@ def theme():
                             return figure_canvas_agg
 
                         # Layout creation
-                        layout = [[sg.Text('CLUSTERS BASED ON LOCATIONS of SARS-CoV-2 mutations')],
+                        layout = [[sg.Text('CLUSTERS BASED ON LOCATIONS of SARS-CoV-2 mutations',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'),
+                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1',font='Cooper')],
                                   [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
-                                  [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
+                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -508,13 +508,13 @@ def theme():
                             return figure_canvas_agg
 
                         # Layout creation
-                        layout = [[sg.Text('CLUSTERS BASED ON GENE NAME of SARS-CoV-2 mutations')],
+                        layout = [[sg.Text('CLUSTERS BASED ON GENE NAME of SARS-CoV-2 mutations',font='Cooper')],
+                                  [sg.Text("Choose a file: ",font='Cooper'),
+                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1',font='Cooper')],
                                   [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN-", button_text='Import Dataset 1')],
-                                  [sg.Text("Choose a file: "),
-                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2')],
+                                   sg.FileBrowse(key="-IN2-", button_text='Import Dataset 2',font='Cooper')],
                                   [sg.Canvas(key='-CANVAS-')],
-                                  [sg.Button("Plot"), sg.Button("Clear"), sg.Button("Back")]]
+                                  [sg.Button("Plot",border_width=0,font='Cooper'), sg.Button("Clear",border_width=0,font='Cooper'), sg.Button("Back",border_width=0,font='Cooper')]]
 
                         # Create a window. finalize=Must be True.
                         window = sg.Window('Demo Application - Genetrix', layout, finalize=True,
@@ -586,7 +586,7 @@ def theme():
             def popup_text(filename, text):
 
                 layout = [
-                    [sg.Multiline(text, size=(80, 25)), ],
+                    [sg.Multiline(text, size=(80, 25),font='Cooper'), ],
                 ]
                 win = sg.Window(filename, layout, modal=True, finalize=True)
 
