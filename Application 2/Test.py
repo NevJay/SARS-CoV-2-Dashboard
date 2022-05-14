@@ -18,7 +18,7 @@ from tkinter.ttk import Progressbar
 import time
 
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 
 def showPassword(event):
@@ -51,7 +51,7 @@ class LabeledEntry(LabelFrame):
         self.ico = PhotoImage(file=imglcn)
         self.imglbl = Label(self, bd=0, image=self.ico, **kwargs)
 
-        self.entry = Entry(self, bd=0, width=35, font=('', 12), textvariable=self.Entry_var, bg='#221a1a',fg='white')
+        self.entry = Entry(self, bd=0, width=35, font=('', 12), textvariable=self.Entry_var, bg='#161C30',fg='white')
         # frame draws a line just below entry
         self.line = Frame(self, bd=0, width=50, height=2, bg='black')
         # id any error occurs use this to deiplay
@@ -91,9 +91,9 @@ class LoginPage(Frame):
         Label(self, image=self.bg).pack()
 
         # take id input and password
-        self._id = LabeledEntry(self,'Your first name here.', '', 'users.png', **{'bg': '#221a1a'})
+        self._id = LabeledEntry(self,'Your first name here.', '', 'users.png', **{'bg': '#161C30'})
         self._id.place(x=40, y=300)
-        self.psw = LabeledEntry(self, 'Password', '', 'users.png', **{'bg': '#221a1a'})
+        self.psw = LabeledEntry(self, 'Password', '', 'users.png', **{'bg': '#161C30'})
         self.psw.entry['show'] = '*'  # hiide typing charcters
         self.psw.place(x=40, y=390)
         # show password
@@ -102,10 +102,10 @@ class LoginPage(Frame):
         self.psw.entry.bind("<ButtonRelease-3>", hidePassword)
         # login button
 
-        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.login_btn.place(x=3, y=490)
         # register button
-        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.register_btn.place(x=305, y=568)
 
 # register page interface for the app
@@ -122,7 +122,7 @@ class RegisterPage(Frame):
         Label(self, image=self.bg).pack()
 
         # take id input and password
-        default = {'bg': '#221a1a'}
+        default = {'bg': '#161C30'}
         self.fname = LabeledEntry(self, 'First name', '', 'users.png', **default)
         # lower the width of entry
         self.fname.entry['width'] = 15
@@ -149,10 +149,10 @@ class RegisterPage(Frame):
         self.retype_psw.entry.bind("<ButtonRelease-3>", hidePassword)
 
         # login button
-        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.login_btn.place(x=3, y=490)
         # register button
-        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.register_btn.place(x=305, y=568)
 
     def on_register(self):
@@ -254,15 +254,15 @@ def Analysis():
     root = Tk()
     root.geometry("465x708")
     root.resizable(False, False)
-    root["bg"] = "#221a1a"
+    root["bg"] = "#161C30"
     root.title("Main Menue")
 
     Label(root, text="Welcome To Genetrix", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
-    customtkinter.CTkButton(root, text="PREDICTED DATA", bd=0, height=50, width=285, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22,),command=ProgressBarWindow).place(x=100, y=170)
-    customtkinter.CTkButton(root, text="CLUSTERED DATA", bd=0, height=50, width=60, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=ClusterWindow).place(x=100, y=240)
-    customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=Graphs).place(x=100, y=310)
-    customtkinter.CTkButton(root, text="ABOUT", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=nextwindow).place(x=100, y=380)
-    customtkinter.CTkButton(root, text="EXIT", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=root.destroy).place(x=100, y=450)
+    customtkinter.CTkButton(root, text="PREDICTED DATA", bd=0, height=50, width=285, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,),command=ProgressBarWindow).place(x=100, y=170)
+    customtkinter.CTkButton(root, text="CLUSTERED DATA", bd=0, height=50, width=60, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=ClusterWindow).place(x=100, y=240)
+    customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=Graphs).place(x=100, y=310)
+    customtkinter.CTkButton(root, text="ABOUT", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=nextwindow).place(x=100, y=380)
+    customtkinter.CTkButton(root, text="EXIT", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=root.destroy).place(x=100, y=450)
 
     root.mainloop()
 
@@ -276,15 +276,15 @@ def Graphs():
     root2 = Tk()
     root2.geometry("540x708")
     root2.resizable(False, False)
-    root2["bg"] = "#221a1a"
+    root2["bg"] = "#161C30"
     root2.title("Genetrix")
 
     Label(root2, text="Welcome To Genetrix Plots", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
-    customtkinter.CTkButton(root2, text="BARPLOT", bd=0, height=50, width=510, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22,), command=BarPlot).place(x=18, y=170)
-    customtkinter.CTkButton(root2, text="CLUSTERPLOT", bd=0, height=50, width=510, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=ClusterPlot).place(x=18, y=240)
-    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON LOCATIONS", bd=0, height=50, width=284, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=LocationPlot).place(x=18, y=310)
-    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON GENE NAME", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22),command=GenePlot).place(x=18, y=380)
-    customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=515, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=MainBack).place(x=18, y=450)
+    customtkinter.CTkButton(root2, text="BARPLOT", bd=0, height=50, width=510, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=BarPlot).place(x=18, y=170)
+    customtkinter.CTkButton(root2, text="CLUSTERPLOT", bd=0, height=50, width=510, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=ClusterPlot).place(x=18, y=240)
+    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON LOCATIONS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=LocationPlot).place(x=18, y=310)
+    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON GENE NAME", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22),command=GenePlot).place(x=18, y=380)
+    customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=515, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=MainBack).place(x=18, y=450)
 
     root2.mainloop()
 
@@ -312,7 +312,7 @@ def BarPlot():
     root2.destroy()
     def plot():
         # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
+        fig = Figure(figsize=(15, 5.75), dpi=100)
         df_a=df_a1
         df_a.head(2)
 
@@ -367,14 +367,13 @@ def BarPlot():
     window.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window.geometry("1500x750")
+    window.geometry("1100x650")
 
     # button that displays the plot
-
-    Button(master=window, command=get_data_frame1, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window, command=get_data_frame2, height=2, width=10, text="Browse file 2").place(x=580,y=0)
-    Button(master=window, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window, command=BarplotBack, height=2, width=10, text="Back").place(x=1300,y=0)
+    customtkinter.CTkButton(master=window, height=2, width=10, text="Browse file 1",command=get_data_frame1).place(x=280,y=0)
+    customtkinter.CTkButton(master=window, height=2, width=10, text="Browse file 2",command=get_data_frame2).place(x=400,y=0)
+    customtkinter.CTkButton(master=window, command=plot, height=2, width=10, text="Plot").pack()
+    customtkinter.CTkButton(master=window, command=BarplotBack, height=2, width=10, text="Back").place(x=1000,y=0)
 
     # run the gui
     window.mainloop()
@@ -399,7 +398,7 @@ def ClusterPlot():
     root2.destroy()
     def plot():
         # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
+        fig = Figure(figsize=(15, 5.75), dpi=100)
 
         df_a = df_a3
         df_a.head(2)
@@ -450,13 +449,13 @@ def ClusterPlot():
     window3.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window3.geometry("1500x750")
+    window3.geometry("1100x650")
 
     # button that displays the plot
-    Button(master=window3, command=get_data_frame3, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window3, command=get_data_frame4, height=2, width=10, text="Browse file 2").place(x=580,y=0)
-    Button(master=window3, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window3, command=ClusterPlotBack, height=2, width=10, text="Back").place(x=1300,y=0)
+    customtkinter.CTkButton(master=window3, height=2, width=10, text="Browse file 1",command=get_data_frame3).place(x=280,y=0)
+    customtkinter.CTkButton(master=window3, height=2, width=10, text="Browse file 2",command=get_data_frame4).place(x=400,y=0)
+    customtkinter.CTkButton(master=window3, command=plot, height=2, width=10, text="Plot").pack()
+    customtkinter.CTkButton(master=window3, command=ClusterPlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
 
     # run the gui
     window3.mainloop()
@@ -531,13 +530,13 @@ def LocationPlot():
     window4.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window4.geometry("1500x750")
+    window4.geometry("1100x740")
 
     # button that displays the plot
-    Button(master=window4, command=get_data_frame5, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window4, command=get_data_frame6, height=2, width=10, text="Browse file 2").place(x=580,y=0)
-    Button(master=window4, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window4, command=LocationPlotBack, height=2, width=10, text="Back").place(x=1300,y=0)
+    customtkinter.CTkButton(master=window4, height=2, width=10, text="Browse file 1",command=get_data_frame5).place(x=280,y=0)
+    customtkinter.CTkButton(master=window4, height=2, width=10, text="Browse file 2",command=get_data_frame6).place(x=400,y=0)
+    customtkinter.CTkButton(master=window4, command=plot, height=2, width=10, text="Plot").pack()
+    customtkinter.CTkButton(master=window4, command=LocationPlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
 
     # run the gui
     window4.mainloop()
@@ -563,7 +562,7 @@ def GenePlot():
     root2.destroy()
     def plot():
         # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
+        fig = Figure(figsize=(15, 5.75), dpi=100)
 
         df_a = df_a7
         df_a.head(2)
@@ -617,14 +616,13 @@ def GenePlot():
     window5.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window5.geometry("1500x750")
+    window5.geometry("1100x650")
 
     # button that displays the plot
-    Button(master=window5, command=get_data_frame7, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window5, command=get_data_frame8, height=2, width=10, text="Browse file 2").place(x=580,y=0)
-    Button(master=window5, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window5, command=GenePlotBack, height=2, width=10, text="Back").place(x=1300,y=0)
-
+    customtkinter.CTkButton(master=window5, height=2, width=10, text="Browse file 1",command=get_data_frame7).place(x=280,y=0)
+    customtkinter.CTkButton(master=window5, height=2, width=10, text="Browse file 2",command=get_data_frame8).place(x=400,y=0)
+    customtkinter.CTkButton(master=window5, command=plot, height=2, width=10, text="Plot").pack()
+    customtkinter.CTkButton(master=window5, command=GenePlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
     # run the gui
     window5.mainloop()
 
@@ -637,6 +635,15 @@ def nextwindow():
     text.insert(INSERT,"SARS-CoV-2-Dashboard \n \n The rapid spread of the coronavirus disease 2019 (COVID19) pandemic, which was caused by the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) coronavirus, has resulted in 95,932,739 confirmed cases. As of January 20, 2021, there had been 2 054 853 cases and 2,054, 853 fatalities. In the twenty-first century, there have been three significant outbreaks of fatal pneumonia this century. SARS-CoV (2002), Middle East, caused by b-coronaviruses MERS-CoV (respiratory syndrome coronavirus) (2012), and SARS-CoV-2 is a virus that causes SARS (2019). Clustering is a Machine Learning Technique that involves the grouping of data points. Given a set of data points, researchers can use a clustering algorithm to classify each data point into a specific group. Creating mutation clusters which depend on certain features of the virus will be easier using clustering algorithms. There is much research conducted regarding mutation clustering (other types of viruses and diseases) following few of them directly regarding SARS CoV-2 mutations. In this research, researchers try to go beyond gene-based clustering of CoV-2 mutations to predict the manner Covid-19 mutates next using analytical techniques.")
     text.pack()
     win.mainloop()
+
+def get_data_frame9():
+    global df_a9
+    global col
+    file_name = askopenfilename()
+    df_a9 = pd.read_csv(file_name)
+    col = list(df_a9)
+    print(col)
+
 
 def ProgressBar():
     class Root(Tk):
@@ -651,8 +658,10 @@ def ProgressBar():
 
         def progressBar(self):
 
-            self.button1 = ttk.Button(self.buttonFrame, text = "Predict", command = self.run_progressbar)
+            self.button1 = ttk.Button(self.buttonFrame, text = "Browse", command = get_data_frame9)
             self.button1.grid(column =0, row = 0)
+            self.button2 = ttk.Button(self.buttonFrame, text = "Predict", command = self.run_progressbar)
+            self.button2.grid(column =0, row = 2)
             self.progress_bar = ttk.Progressbar(self, orient = 'horizontal', length = 286, mode = 'determinate')
             self.progress_bar.place(x=60,y=50)
 
@@ -690,32 +699,38 @@ def Cluster():
     class mclass:
         def __init__(self, window):
             self.window = window
-            Button(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=170,y=0)
-            self.button3 = Button(window, text="Plot", command=self.plot,height=1,width=7).pack()
+            customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=420,y=0)
+            self.button3 = customtkinter.CTkButton(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
-            self.fig = Figure(figsize=(6, 6))
+            self.fig = Figure(figsize=(11, 6.3))
             self.a = self.fig.add_subplot(111)
-            Button(window, text="Back", command=BackClustered,height=1,width=7).place(x=500,y=0)
+            customtkinter.CTkButton(window, text="Back", command=BackClustered,height=1,width=7).place(x=1020,y=0)
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.window)
             self.canvas.get_tk_widget().pack()
-
 
         def plot(self):
             self.a.cla()
             le = LabelEncoder()
-            df["Isolate ID"] = le.fit_transform(df["Isolate ID"])
+            df["Gene name"] = le.fit_transform(df["Gene name"])
+
+            scaler = MinMaxScaler()
+
+            scaler.fit(df[['DNAENC']])
+            df['DNAENC'] = scaler.transform(df[['DNAENC']])
+
+            scaler.fit(df[['Gene name']])
+            df['Gene name'] = scaler.transform(df[['Gene name']])
 
             km = KMeans(n_clusters=3)
-            y_predicted = km.fit_predict(df[['Isolate ID', 'DNAENC']])
+            y_predicted = km.fit_predict(df[['Gene name', 'DNAENC']])
             df['cluster'] = y_predicted
             df1 = df[df.cluster == 0]
             df2 = df[df.cluster == 1]
             df3 = df[df.cluster == 2]
 
-
-            self.a.scatter(df1['Isolate ID'], df1['DNAENC'], color='green',label='cluster1')
-            self.a.scatter(df2['Isolate ID'], df2['DNAENC'], color='red', label='cluster2')
-            self.a.scatter(df3['Isolate ID'], df3['DNAENC'], color='yellow', label='cluster3')
+            self.a.scatter(df1['Gene name'], df1['DNAENC'], color='green',label='cluster1')
+            self.a.scatter(df2['Gene name'], df2['DNAENC'], color='red', label='cluster2')
+            self.a.scatter(df3['Gene name'], df3['DNAENC'], color='yellow', label='cluster3')
 
             self.a.set_title ("Scatter Plot", fontsize=16)
             self.a.set_ylabel("Y", fontsize=14)
