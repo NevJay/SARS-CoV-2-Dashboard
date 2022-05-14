@@ -699,12 +699,12 @@ def Cluster():
     class mclass:
         def __init__(self, window):
             self.window = window
-            customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=320,y=0)
+            customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=300,y=0)
             self.button3 = customtkinter.CTkButton(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
             self.fig = Figure(figsize=(8, 6.3))
             self.a = self.fig.add_subplot(111)
-            customtkinter.CTkButton(window, text="Back", command=BackClustered,height=1,width=7).place(x=1020,y=0)
+            customtkinter.CTkButton(window, text="Back", command=BackClustered,height=1,width=7).place(x=740,y=0)
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.window)
             self.canvas.get_tk_widget().pack()
 
