@@ -18,7 +18,7 @@ from tkinter.ttk import Progressbar
 import time
 
 from sklearn.cluster import KMeans
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 
 def showPassword(event):
@@ -698,23 +698,29 @@ def Cluster():
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.window)
             self.canvas.get_tk_widget().pack()
 
-
         def plot(self):
             self.a.cla()
             le = LabelEncoder()
-            df["Isolate ID"] = le.fit_transform(df["Isolate ID"])
+            df["Gene name"] = le.fit_transform(df["Gene name"])
+
+            scaler = MinMaxScaler()
+
+            scaler.fit(df[['DNAENC']])
+            df['DNAENC'] = scaler.transform(df[['DNAENC']])
+
+            scaler.fit(df[['Gene name']])
+            df['Gene name'] = scaler.transform(df[['Gene name']])
 
             km = KMeans(n_clusters=3)
-            y_predicted = km.fit_predict(df[['Isolate ID', 'DNAENC']])
+            y_predicted = km.fit_predict(df[['Gene name', 'DNAENC']])
             df['cluster'] = y_predicted
             df1 = df[df.cluster == 0]
             df2 = df[df.cluster == 1]
             df3 = df[df.cluster == 2]
 
-
-            self.a.scatter(df1['Isolate ID'], df1['DNAENC'], color='green',label='cluster1')
-            self.a.scatter(df2['Isolate ID'], df2['DNAENC'], color='red', label='cluster2')
-            self.a.scatter(df3['Isolate ID'], df3['DNAENC'], color='yellow', label='cluster3')
+            self.a.scatter(df1['Gene name'], df1['DNAENC'], color='green',label='cluster1')
+            self.a.scatter(df2['Gene name'], df2['DNAENC'], color='red', label='cluster2')
+            self.a.scatter(df3['Gene name'], df3['DNAENC'], color='yellow', label='cluster3')
 
             self.a.set_title ("Scatter Plot", fontsize=16)
             self.a.set_ylabel("Y", fontsize=14)
