@@ -637,6 +637,15 @@ def nextwindow():
     text.pack()
     win.mainloop()
 
+def get_data_frame9():
+    global df_a9
+    global col
+    file_name = askopenfilename()
+    df_a9 = pd.read_csv(file_name)
+    col = list(df_a9)
+    print(col)
+
+
 def ProgressBar():
     class Root(Tk):
         def __init__(self):
@@ -650,8 +659,10 @@ def ProgressBar():
 
         def progressBar(self):
 
-            self.button1 = ttk.Button(self.buttonFrame, text = "Predict", command = self.run_progressbar)
+            self.button1 = ttk.Button(self.buttonFrame, text = "Browse", command = get_data_frame9)
             self.button1.grid(column =0, row = 0)
+            self.button2 = ttk.Button(self.buttonFrame, text = "Predict", command = self.run_progressbar)
+            self.button2.grid(column =0, row = 2)
             self.progress_bar = ttk.Progressbar(self, orient = 'horizontal', length = 286, mode = 'determinate')
             self.progress_bar.place(x=60,y=50)
 
