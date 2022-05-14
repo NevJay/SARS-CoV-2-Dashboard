@@ -699,10 +699,10 @@ def Cluster():
     class mclass:
         def __init__(self, window):
             self.window = window
-            customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=420,y=0)
+            customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=320,y=0)
             self.button3 = customtkinter.CTkButton(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
-            self.fig = Figure(figsize=(11, 6.3))
+            self.fig = Figure(figsize=(8, 6.3))
             self.a = self.fig.add_subplot(111)
             customtkinter.CTkButton(window, text="Back", command=BackClustered,height=1,width=7).place(x=1020,y=0)
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.window)
@@ -731,10 +731,11 @@ def Cluster():
             self.a.scatter(df1['Gene name'], df1['DNAENC'], color='green',label='cluster1')
             self.a.scatter(df2['Gene name'], df2['DNAENC'], color='red', label='cluster2')
             self.a.scatter(df3['Gene name'], df3['DNAENC'], color='yellow', label='cluster3')
+            self.a.scatter(km.cluster_centers_[:, 0], km.cluster_centers_[:, 1], color='purple', marker='*',label='centroid')
 
             self.a.set_title ("Scatter Plot", fontsize=16)
-            self.a.set_ylabel("Y", fontsize=14)
-            self.a.set_xlabel("X", fontsize=14)
+            self.a.set_ylabel("DNAENC", fontsize=14)
+            self.a.set_xlabel("Gene name", fontsize=14)
             self.canvas.draw()
 
     window = Tk()
