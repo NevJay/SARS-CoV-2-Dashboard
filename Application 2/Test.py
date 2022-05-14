@@ -312,7 +312,7 @@ def BarPlot():
     root2.destroy()
     def plot():
         # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
+        fig = Figure(figsize=(15, 5.75), dpi=100)
         df_a=df_a1
         df_a.head(2)
 
@@ -367,13 +367,13 @@ def BarPlot():
     window.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window.geometry("1500x750")
+    window.geometry("1100x650")
 
     # button that displays the plot
-    Button(master=window, command=get_data_frame1, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window, command=get_data_frame2, height=2, width=10, text="Browse file 2").place(x=580,y=0)
+    Button(master=window, height=2, width=10, text="Browse file 1",command=get_data_frame1).place(x=280,y=0)
+    Button(master=window, height=2, width=10, text="Browse file 2",command=get_data_frame2).place(x=400,y=0)
     Button(master=window, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window, command=BarplotBack, height=2, width=10, text="Back").place(x=1300,y=0)
+    Button(master=window, command=BarplotBack, height=2, width=10, text="Back").place(x=1000,y=0)
 
     # run the gui
     window.mainloop()
@@ -398,7 +398,7 @@ def ClusterPlot():
     root2.destroy()
     def plot():
         # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
+        fig = Figure(figsize=(15, 5.75), dpi=100)
 
         df_a = df_a3
         df_a.head(2)
@@ -449,13 +449,13 @@ def ClusterPlot():
     window3.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window3.geometry("1500x750")
+    window3.geometry("1100x650")
 
     # button that displays the plot
-    Button(master=window3, command=get_data_frame3, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window3, command=get_data_frame4, height=2, width=10, text="Browse file 2").place(x=580,y=0)
+    Button(master=window3, height=2, width=10, text="Browse file 1",command=get_data_frame3).place(x=280,y=0)
+    Button(master=window3, height=2, width=10, text="Browse file 2",command=get_data_frame4).place(x=400,y=0)
     Button(master=window3, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window3, command=ClusterPlotBack, height=2, width=10, text="Back").place(x=1300,y=0)
+    Button(master=window3, command=ClusterPlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
 
     # run the gui
     window3.mainloop()
@@ -530,13 +530,13 @@ def LocationPlot():
     window4.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window4.geometry("1500x750")
+    window4.geometry("1100x740")
 
     # button that displays the plot
-    Button(master=window4, command=get_data_frame5, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window4, command=get_data_frame6, height=2, width=10, text="Browse file 2").place(x=580,y=0)
+    Button(master=window4, height=2, width=10, text="Browse file 1",command=get_data_frame5).place(x=280,y=0)
+    Button(master=window4, height=2, width=10, text="Browse file 2",command=get_data_frame6).place(x=400,y=0)
     Button(master=window4, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window4, command=LocationPlotBack, height=2, width=10, text="Back").place(x=1300,y=0)
+    Button(master=window4, command=LocationPlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
 
     # run the gui
     window4.mainloop()
@@ -562,7 +562,7 @@ def GenePlot():
     root2.destroy()
     def plot():
         # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
+        fig = Figure(figsize=(15, 5.75), dpi=100)
 
         df_a = df_a7
         df_a.head(2)
@@ -616,14 +616,13 @@ def GenePlot():
     window5.title('Plotting in Tkinter')
 
     # dimensions of the main window
-    window5.geometry("1500x750")
+    window5.geometry("1100x650")
 
     # button that displays the plot
-    Button(master=window5, command=get_data_frame7, height=2, width=10, text="Browse file 1").place(x=450,y=0)
-    Button(master=window5, command=get_data_frame8, height=2, width=10, text="Browse file 2").place(x=580,y=0)
+    Button(master=window5, height=2, width=10, text="Browse file 1",command=get_data_frame7).place(x=280,y=0)
+    Button(master=window5, height=2, width=10, text="Browse file 2",command=get_data_frame8).place(x=400,y=0)
     Button(master=window5, command=plot, height=2, width=10, text="Plot").pack()
-    Button(master=window5, command=GenePlotBack, height=2, width=10, text="Back").place(x=1300,y=0)
-
+    Button(master=window5, command=GenePlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
     # run the gui
     window5.mainloop()
 
@@ -700,12 +699,12 @@ def Cluster():
     class mclass:
         def __init__(self, window):
             self.window = window
-            Button(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=170,y=0)
+            Button(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=420,y=0)
             self.button3 = Button(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
-            self.fig = Figure(figsize=(6, 6))
+            self.fig = Figure(figsize=(11, 6.3))
             self.a = self.fig.add_subplot(111)
-            Button(window, text="Back", command=BackClustered,height=1,width=7).place(x=500,y=0)
+            Button(window, text="Back", command=BackClustered,height=1,width=7).place(x=1020,y=0)
             self.canvas = FigureCanvasTkAgg(self.fig, master=self.window)
             self.canvas.get_tk_widget().pack()
 
