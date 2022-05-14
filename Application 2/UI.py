@@ -51,7 +51,7 @@ class LabeledEntry(LabelFrame):
         self.ico = PhotoImage(file=imglcn)
         self.imglbl = Label(self, bd=0, image=self.ico, **kwargs)
 
-        self.entry = Entry(self, bd=0, width=35, font=('', 12), textvariable=self.Entry_var, bg='#221a1a',fg='white')
+        self.entry = Entry(self, bd=0, width=35, font=('', 12), textvariable=self.Entry_var, bg='#161C30',fg='white')
         # frame draws a line just below entry
         self.line = Frame(self, bd=0, width=50, height=2, bg='black')
         # id any error occurs use this to deiplay
@@ -91,9 +91,9 @@ class LoginPage(Frame):
         Label(self, image=self.bg).pack()
 
         # take id input and password
-        self._id = LabeledEntry(self,'Your first name here.', '', 'users.png', **{'bg': '#221a1a'})
+        self._id = LabeledEntry(self,'Your first name here.', '', 'users.png', **{'bg': '#161C30'})
         self._id.place(x=40, y=300)
-        self.psw = LabeledEntry(self, 'Password', '', 'users.png', **{'bg': '#221a1a'})
+        self.psw = LabeledEntry(self, 'Password', '', 'users.png', **{'bg': '#161C30'})
         self.psw.entry['show'] = '*'  # hiide typing charcters
         self.psw.place(x=40, y=390)
         # show password
@@ -102,10 +102,10 @@ class LoginPage(Frame):
         self.psw.entry.bind("<ButtonRelease-3>", hidePassword)
         # login button
 
-        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.login_btn.place(x=3, y=490)
         # register button
-        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.register_btn.place(x=305, y=568)
 
 # register page interface for the app
@@ -122,7 +122,7 @@ class RegisterPage(Frame):
         Label(self, image=self.bg).pack()
 
         # take id input and password
-        default = {'bg': '#221a1a'}
+        default = {'bg': '#161C30'}
         self.fname = LabeledEntry(self, 'First name', '', 'users.png', **default)
         # lower the width of entry
         self.fname.entry['width'] = 15
@@ -149,10 +149,10 @@ class RegisterPage(Frame):
         self.retype_psw.entry.bind("<ButtonRelease-3>", hidePassword)
 
         # login button
-        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.login_btn = Button(self, text='Login', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.login_btn.place(x=3, y=490)
         # register button
-        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#221a1a', bg='#ff443a',activebackground='#ff443a', bd=0)
+        self.register_btn = Button(self, text='Register', font=('arial', 22), width=9, fg='#161C30', bg='#ffffff',activebackground='#ffffff', bd=0)
         self.register_btn.place(x=305, y=568)
 
     def on_register(self):
@@ -254,15 +254,15 @@ def Analysis():
     root = Tk()
     root.geometry("465x708")
     root.resizable(False, False)
-    root["bg"] = "#221a1a"
+    root["bg"] = "#161C30"
     root.title("Main Menue")
 
     Label(root, text="Welcome To Genetrix", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
-    customtkinter.CTkButton(root, text="PREDICTED DATA", bd=0, height=50, width=285, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22,),command=ProgressBarWindow).place(x=100, y=170)
-    customtkinter.CTkButton(root, text="CLUSTERED DATA", bd=0, height=50, width=60, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=ClusterWindow).place(x=100, y=240)
-    customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=Graphs).place(x=100, y=310)
-    customtkinter.CTkButton(root, text="ABOUT", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=nextwindow).place(x=100, y=380)
-    customtkinter.CTkButton(root, text="EXIT", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=root.destroy).place(x=100, y=450)
+    customtkinter.CTkButton(root, text="PREDICTED DATA", bd=0, height=50, width=285, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,),command=ProgressBarWindow).place(x=100, y=170)
+    customtkinter.CTkButton(root, text="CLUSTERED DATA", bd=0, height=50, width=60, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=ClusterWindow).place(x=100, y=240)
+    customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=Graphs).place(x=100, y=310)
+    customtkinter.CTkButton(root, text="ABOUT", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=nextwindow).place(x=100, y=380)
+    customtkinter.CTkButton(root, text="EXIT", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=root.destroy).place(x=100, y=450)
 
     root.mainloop()
 
@@ -276,15 +276,15 @@ def Graphs():
     root2 = Tk()
     root2.geometry("540x708")
     root2.resizable(False, False)
-    root2["bg"] = "#221a1a"
+    root2["bg"] = "#161C30"
     root2.title("Genetrix")
 
     Label(root2, text="Welcome To Genetrix Plots", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
-    customtkinter.CTkButton(root2, text="BARPLOT", bd=0, height=50, width=510, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22,), command=BarPlot).place(x=18, y=170)
-    customtkinter.CTkButton(root2, text="CLUSTERPLOT", bd=0, height=50, width=510, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=ClusterPlot).place(x=18, y=240)
-    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON LOCATIONS", bd=0, height=50, width=284, text_color="#221a1a",fg_color="#ff443a", text_font=('arial', 22),command=LocationPlot).place(x=18, y=310)
-    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON GENE NAME", bd=0, height=50, width=282, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22),command=GenePlot).place(x=18, y=380)
-    customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=515, text_color="#221a1a", fg_color="#ff443a",text_font=('arial', 22), command=MainBack).place(x=18, y=450)
+    customtkinter.CTkButton(root2, text="BARPLOT", bd=0, height=50, width=510, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=BarPlot).place(x=18, y=170)
+    customtkinter.CTkButton(root2, text="CLUSTERPLOT", bd=0, height=50, width=510, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=ClusterPlot).place(x=18, y=240)
+    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON LOCATIONS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=LocationPlot).place(x=18, y=310)
+    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON GENE NAME", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22),command=GenePlot).place(x=18, y=380)
+    customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=515, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=MainBack).place(x=18, y=450)
 
     root2.mainloop()
 
