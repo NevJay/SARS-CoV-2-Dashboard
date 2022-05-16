@@ -166,7 +166,7 @@ def ProgressBar():
             super(Root, self).__init__()
             self.title("Progress Bar")
             self.minsize(400, 100)
-
+            self["bg"] = "#161C30"
             self.buttonFrame = ttk.LabelFrame(self, text="")
             self.buttonFrame.place(x=150,y=80)
             self.progressBar()
@@ -177,12 +177,6 @@ def ProgressBar():
             self.progress_bar.place(x=60,y=50)
 
         def run_progressbar(self):
-            def newwindow():
-                root = Tk()
-                root.geometry("465x708")
-                root.resizable(False, False)
-                root["bg"] = "#221a1a"
-                root.title("Main Menue")
             self.progress_bar["maximum"] = 100
 
             for i in range(101):
@@ -201,8 +195,9 @@ def SelectGene():
     root.destroy()
     frame = tk.Tk()
     frame.title("TextBox Input")
-    frame.geometry('400x200')
-
+    frame.geometry('350x120')
+    frame["bg"] = "#161C30"
+    #frame["bg"] = "#161C30"
     def printInput():
         inp = inputtxt.get(1.0, "end-1c")
         lbl.config(text="Sequence: " + inp)
@@ -212,10 +207,10 @@ def SelectGene():
 
     inputtxt.pack()
 
-    printButton = tk.Button(frame, text="Input", command=printInput)
+    printButton = customtkinter.CTkButton(frame, text="Input", command=printInput)
     printButton.pack()
-    ModelButton = tk.Button(frame, text="Predict", command=ProgressBar)
-    ModelButton.pack()
+    ModelButton = customtkinter.CTkButton(frame, text="Predict", command=ProgressBar)
+    ModelButton.place(x=116,y=80)
 
     lbl = tk.Label(frame, text="")
     lbl.pack()
@@ -225,7 +220,8 @@ def DataSet():
     global df
     global root
     root=Tk()
-    root.geometry("200x350")
+    root.geometry("203x390")
+    root["bg"] = "#161C30"
     style = ttk.Style()
     style.theme_use('clam')
     my_frame = Frame(root)          #create frame
@@ -234,8 +230,8 @@ def DataSet():
 
     df = pd.read_csv(askopenfilename())     #path
 
-    customtkinter.CTkButton(root, text="Select Gene", bd=0, height=50, width=285, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,),command=SelectGene).pack()
-    customtkinter.CTkButton(root, text="Back", bd=0, height=50, width=285, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=root.destroy).pack()
+    customtkinter.CTkButton(root, text="Select Gene", bd=0, height=50, width=180, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,),command=SelectGene).pack()
+    customtkinter.CTkButton(root, text="Back", bd=0, height=50, width=182, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=root.destroy).place(x=10,y=330)
     my_tree["column"] = list(df.columns)            #setup new treeview
     my_tree["show"] = "headings"
 
