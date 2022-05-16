@@ -434,13 +434,6 @@ def PredictionWindow():
                 self.progress_bar.place(x=60, y=50)
 
             def run_progressbar(self):
-                def newwindow():
-                    root = Tk()
-                    root.geometry("465x708")
-                    root.resizable(False, False)
-                    root["bg"] = "#221a1a"
-                    root.title("Main Menue")
-
                 self.progress_bar["maximum"] = 100
 
                 for i in range(101):
@@ -448,7 +441,7 @@ def PredictionWindow():
                     self.progress_bar["value"] = i
                     self.progress_bar.update()
                 self.destroy()
-                newwindow()
+                Model()
                 self.progress_bar["value"] = 0
 
         root = Root()
@@ -473,7 +466,7 @@ def PredictionWindow():
 
         printButton = tk.Button(frame, text="Input", command=printInput)
         printButton.pack()
-        ModelButton = tk.Button(frame, text="Predict", command=Model)
+        ModelButton = tk.Button(frame, text="Predict", command=ProgressBar)
         ModelButton.pack()
         ModelButtonBack = tk.Button(frame, text="Back", command=ModelBack)
         ModelButtonBack.pack()
@@ -892,45 +885,6 @@ def get_data_frame9():
     df_a9 = pd.read_csv(file_name)
     col = list(df_a9)
     print(col)
-
-def ProgressBar():
-    class Root(Tk):
-        def __init__(self):
-            super(Root, self).__init__()
-            self.title("Progress Bar")
-            self.minsize(400, 100)
-
-            self.buttonFrame = ttk.LabelFrame(self, text="")
-            self.buttonFrame.place(x=150,y=80)
-            self.progressBar()
-
-        def progressBar(self):
-
-            self.button1 = ttk.Button(self.buttonFrame, text = "Browse", command = get_data_frame9)
-            self.button1.grid(column =0, row = 0)
-            self.button2 = ttk.Button(self.buttonFrame, text = "Predict", command = self.run_progressbar)
-            self.button2.grid(column =0, row = 2)
-            self.progress_bar = ttk.Progressbar(self, orient = 'horizontal', length = 286, mode = 'determinate')
-            self.progress_bar.place(x=60,y=50)
-
-        def run_progressbar(self):
-            def newwindow():
-                root = Tk()
-                root.geometry("465x708")
-                root.resizable(False, False)
-                root["bg"] = "#221a1a"
-                root.title("Main Menue")
-            self.progress_bar["maximum"] = 100
-
-            for i in range(101):
-                time.sleep(0.05)
-                self.progress_bar["value"] = i
-                self.progress_bar.update()
-            self.destroy()
-            newwindow()
-            self.progress_bar["value"] = 0
-    root = Root()
-    root.mainloop()
 
 def get_data_frame():
     global df

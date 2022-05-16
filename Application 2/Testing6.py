@@ -11,6 +11,7 @@ from numpy import array
 import time
 
 def Model():
+
     data = df
     data = data.drop('Isolate name', 1)
     data = data.drop('Isolate ID', 1)
@@ -189,12 +190,13 @@ def ProgressBar():
                 self.progress_bar["value"] = i
                 self.progress_bar.update()
             self.destroy()
-            newwindow()
+            Model()
             self.progress_bar["value"] = 0
     root = Root()
     root.mainloop()
 
 def SelectGene():
+    global frame
     global lbl
     root.destroy()
     frame = tk.Tk()
@@ -212,7 +214,7 @@ def SelectGene():
 
     printButton = tk.Button(frame, text="Input", command=printInput)
     printButton.pack()
-    ModelButton = tk.Button(frame, text="Predict", command=Model)
+    ModelButton = tk.Button(frame, text="Predict", command=ProgressBar)
     ModelButton.pack()
 
     lbl = tk.Label(frame, text="")
