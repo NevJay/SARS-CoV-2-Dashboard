@@ -269,6 +269,7 @@ def Analysis():
 
 def PredictionWindow():
     root.destroy()
+    gene_names = ''
     def Model():
         data = df
         data = data.drop('Isolate name', 1)
@@ -278,7 +279,7 @@ def PredictionWindow():
         data['YYYY-MM-DD'] = pd.to_datetime(data['YYYY-MM-DD'], errors='ignore')
 
         data = data.sort_values(by='YYYY-MM-DD')
-
+        global gene_names
         gene_names = data['Gene name'].unique()
 
         print(data.head())
@@ -370,52 +371,132 @@ def PredictionWindow():
             return model
 
         for i in range(len(gene_names)):
+            print(i + 1, " ", gene_names[i])
+        gene_index = inp - 1
 
-            print('gene: ', gene_names[i])
-            encode_seq(gene_names[i])
+        print('gene: ', gene_names[gene_index])
+        encode_seq(gene_names[gene_index])
 
-            vertical = generate_postional(gene_names[i])
+        vertical = generate_postional(gene_names[gene_index])
 
-            seq = []
-            for m in range(len(vertical)):
-                print("\nIteration: ", m, " of ", len(vertical), '\n')
-                X, y = xy_split(vertical, m)
+        seq = []
+        for m in range(len(vertical)):
+            print(" Iteration: ", m, " of ", len(vertical), '\n')
+            X, y = xy_split(vertical, m)
 
-                X = array(X)
-                y = array(y)
+            X = array(X)
+            y = array(y)
 
-                X = X.reshape((X.shape[0], X.shape[1], 1))
-                history = 0
+            X = X.reshape((X.shape[0], X.shape[1], 1))
+            history = 0
 
-                model = model_training(X, y)
-                x_input = X[-1]
-                x_input = array(x_input)
-                x_input = x_input.reshape((1, 3, 1))
-                yhat = model.predict(x_input, verbose=0)
+            model = model_training(X, y)
+            x_input = X[-1]
+            x_input = array(x_input)
+            x_input = x_input.reshape((1, 3, 1))
+            yhat = model.predict(x_input, verbose=0)
 
-                seq.append(yhat)
+            seq.append(yhat)
 
-            seq1 = []
-            for k in range(len(seq)):
-                seq1.append(round(seq[k].tolist()[0][0]))
+        seq1 = []
+        for k in range(len(seq)):
+            seq1.append(round(seq[k].tolist()[0][0]))
 
-            temp_list = []
-            print('temp: ', temp_list)
-            for j in range(len(seq1)):
-                if seq1[j] == 0:
-                    temp_list.append('A')
-                elif seq1[j] == 1:
-                    temp_list.append('T')
-                elif seq1[j] == 2:
-                    temp_list.append('G')
-                else:
-                    temp_list.append('C')
-            final_seq = ''.join([str(item) for item in temp_list])
-            print('final seq: ', final_seq)
-            lbl.config(text="Sequence: " + final_seq)
-            with open('predictions.txt', 'a') as f:
-                string = gene_names[i] + ': ' + final_seq + '\n'
-                f.write(string)
+        temp_list = []
+        print('temp: ', temp_list)
+        for j in range(len(seq1)):
+            if seq1[j] == 0:
+                temp_list.append('A')
+            elif seq1[j] == 1:
+                temp_list.append('T')
+            elif seq1[j] == 2:
+                temp_list.append('G')
+            else:
+                temp_list.append('C')
+        final_seq = ''.join([str(item) for item in temp_list])
+        lbl.config(text="Sequence: " + final_seq + "\n")
+        print('final seq: ', final_seq)
+
+    def ProgressBar():
+        class Root(Tk):
+            def __init__(self):
+                super(Root, self).__init__()
+                self.title("Progress Bar")
+                self.minsize(400, 100)
+                self["bg"] = "#161C30"
+                self.buttonFrame = ttk.LabelFrame(self, text="")
+                self.buttonFrame.place(x=150, y=80)
+                self.progressBar()
+                self.run_progressbar()
+
+            def progressBar(self):
+                self.progress_bar = ttk.Progressbar(self, orient='horizontal', length=286, mode='determinate')
+                self.progress_bar.place(x=60, y=50)
+
+            def run_progressbar(self):
+                self.progress_bar["maximum"] = 100
+
+                for i in range(101):
+                    time.sleep(0.05)
+                    self.progress_bar["value"] = i
+                    self.progress_bar.update()
+                self.destroy()
+                Model()
+                self.progress_bar["value"] = 0
+
+        root = Root()
+        root.mainloop()
+
+    def DataSet():
+        global df
+        global root
+        root = Tk()
+        root.geometry("403x750")
+        root["bg"] = "#161C30"
+        style = ttk.Style()
+        style.theme_use('clam')
+        my_frame = Frame(root)  # create frame
+        my_frame.pack(pady=20)
+        my_tree = ttk.Treeview(my_frame)  # create treeview
+
+        df = pd.read_csv(askopenfilename())  # path
+
+        customtkinter.CTkButton(root, text="Back", bd=0, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22,), command=root.destroy).place(x=140, y=700)
+
+        def printInput():
+            global inp
+            inp = int(inputtxt.get(1.0, "end-1c"))
+            lbl.config(text="Sequence: " + str(inp))
+            print(inp)
+
+        tk.Label(root, text="Enter Int:", height=1, width=10).place(x=40, y=270)
+        customtkinter.CTkButton(root, text="Input", bd=0, fg_color="#ffffff", text_color="#161C30",
+                                text_font=('arial', 22,), command=printInput).place(x=140, y=600)
+        customtkinter.CTkButton(root, text="Predict", bd=0, fg_color="#ffffff", text_color="#161C30",
+                                text_font=('arial', 22,), command=ProgressBar).place(x=140, y=650)
+        inputtxt = tk.Text(root, height=1, width=20)
+        inputtxt.pack()
+        global lbl
+        lbl = tk.Label(root, text="", height=20, width=55, wraplength=375)
+        lbl.pack()
+
+        my_tree["column"] = list(df.columns)  # setup new treeview
+        my_tree["show"] = "headings"
+
+        # put data in treeview
+        df['YYYY-MM-DD'] = pd.to_datetime(df['YYYY-MM-DD'], errors='ignore')
+
+        df = df.sort_values(by='YYYY-MM-DD')
+        df1 = df['Gene name'].unique()
+        i = 0
+        for rows in df1:
+            my_tree.insert("", "end", value=str(i) + ' ' + rows)
+            i = i + 1
+
+        my_tree.pack()  # pack the treeview finally
+        root.mainloop()
+
+    DataSet()
 
     def ProgressBar():
         class Root(Tk):

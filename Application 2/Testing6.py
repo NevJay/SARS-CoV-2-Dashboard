@@ -10,6 +10,7 @@ from keras.models import Sequential
 from numpy import array
 import time
 
+gene_names=''
 def Model():
 
     data = df
@@ -20,7 +21,7 @@ def Model():
     data['YYYY-MM-DD'] = pd.to_datetime(data['YYYY-MM-DD'], errors='ignore')
 
     data = data.sort_values(by='YYYY-MM-DD')
-
+    global gene_names
     gene_names = data['Gene name'].unique()
 
     print(data.head())
@@ -113,52 +114,51 @@ def Model():
         return model
 
     for i in range(len(gene_names)):
+        print(i + 1, " ", gene_names[i])
+    gene_index = inp-1
 
-        print('gene: ', gene_names[i])
-        encode_seq(gene_names[i])
+    print('gene: ', gene_names[gene_index])
+    encode_seq(gene_names[gene_index])
 
-        vertical = generate_postional(gene_names[i])
+    vertical = generate_postional(gene_names[gene_index])
 
-        seq = []
-        for m in range(len(vertical)):
-            print("\nIteration: ", m, " of ", len(vertical), '\n')
-            X,y = xy_split(vertical, m)
+    seq = []
+    for m in range(len(vertical)):
+        print(" Iteration: ", m, " of ", len(vertical), '\n')
+        X, y = xy_split(vertical, m)
 
-            X = array(X)
-            y = array(y)
+        X = array(X)
+        y = array(y)
 
-            X = X.reshape((X.shape[0], X.shape[1], 1))
-            history = 0
+        X = X.reshape((X.shape[0], X.shape[1], 1))
+        history = 0
 
-            model = model_training(X, y)
-            x_input = X[-1]
-            x_input = array(x_input)
-            x_input = x_input.reshape((1, 3, 1))
-            yhat = model.predict(x_input, verbose=0)
+        model = model_training(X, y)
+        x_input = X[-1]
+        x_input = array(x_input)
+        x_input = x_input.reshape((1, 3, 1))
+        yhat = model.predict(x_input, verbose=0)
 
-            seq.append(yhat)
+        seq.append(yhat)
 
-        seq1 = []
-        for k in range(len(seq)):
-            seq1.append(round(seq[k].tolist()[0][0]))
+    seq1 = []
+    for k in range(len(seq)):
+        seq1.append(round(seq[k].tolist()[0][0]))
 
-        temp_list = []
-        print('temp: ', temp_list)
-        for j in range(len(seq1)):
-            if seq1[j] == 0:
-                temp_list.append('A')
-            elif seq1[j] == 1:
-                temp_list.append('T')
-            elif seq1[j] == 2:
-                temp_list.append('G')
-            else:
-                temp_list.append('C')
-        final_seq = ''.join([str(item) for item in temp_list])
-        print('final seq: ', final_seq)
-        lbl.config(text="Sequence: " + final_seq)
-        with open('predictions.txt', 'a') as f:
-            string = gene_names[i] + ': ' + final_seq + '\n'
-            f.write(string)
+    temp_list = []
+    print('temp: ', temp_list)
+    for j in range(len(seq1)):
+        if seq1[j] == 0:
+            temp_list.append('A')
+        elif seq1[j] == 1:
+            temp_list.append('T')
+        elif seq1[j] == 2:
+            temp_list.append('G')
+        else:
+            temp_list.append('C')
+    final_seq = ''.join([str(item) for item in temp_list])
+    lbl.config(text="Sequence: " + final_seq +"\n")
+    print('final seq: ', final_seq)
 
 def ProgressBar():
     class Root(Tk):
@@ -189,61 +189,64 @@ def ProgressBar():
     root = Root()
     root.mainloop()
 
-def SelectGene():
-    global frame
-    global lbl
-    root.destroy()
-    frame = tk.Tk()
-    frame.title("TextBox Input")
-    frame.geometry('350x120')
-    frame["bg"] = "#161C30"
-    #frame["bg"] = "#161C30"
-    def printInput():
-        inp = inputtxt.get(1.0, "end-1c")
-        lbl.config(text="Sequence: " + inp)
-        print(inp)
+def ProgressBar1():
+    class Root7(Tk):
+        def __init__(self):
+            super(Root7, self).__init__()
+            self.title("Progress Bar")
+            self.minsize(400, 100)
+            self["bg"] = "#161C30"
+            #self.buttonFrame = ttk.LabelFrame(self, text="")
+            #self.buttonFrame.place(x=150, y=80)
 
-    inputtxt = tk.Text(frame, height=1, width=20)
-
-    inputtxt.pack()
-
-    printButton = customtkinter.CTkButton(frame, text="Input", command=printInput)
-    printButton.pack()
-    ModelButton = customtkinter.CTkButton(frame, text="Predict", command=ProgressBar)
-    ModelButton.place(x=116,y=80)
-
-    lbl = tk.Label(frame, text="")
-    lbl.pack()
-    frame.mainloop()
+    root = Root7()
+    root.mainloop()
 
 def DataSet():
     global df
-    global root
-    root=Tk()
-    root.geometry("203x390")
-    root["bg"] = "#161C30"
+    global root6
+    root6=Tk()
+    root6.geometry("403x750")
+    root6["bg"] = "#161C30"
     style = ttk.Style()
     style.theme_use('clam')
-    my_frame = Frame(root)          #create frame
+    my_frame = Frame(root6)          #create frame
     my_frame.pack(pady=20)
     my_tree = ttk.Treeview(my_frame)            #create treeview
 
     df = pd.read_csv(askopenfilename())     #path
 
-    customtkinter.CTkButton(root, text="Select Gene", bd=0, height=50, width=180, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,),command=SelectGene).pack()
-    customtkinter.CTkButton(root, text="Back", bd=0, height=50, width=182, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=root.destroy).place(x=10,y=330)
+    customtkinter.CTkButton(root6, text="Back", bd=0,text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=root6.destroy).place(x=140,y=700)
+
+    def printInput():
+        global inp
+        inp = int(inputtxt.get(1.0, "end-1c"))
+        lbl.config(text="Sequence: " + str(inp))
+        print(inp)
+
+    Button(root6, text="Enter", bd=0,command=ProgressBar1).place(x=70,y=270)
+    #tk.Label(root6, text="Enter Int:", height=1, width=10).place(x=40,y=270)
+    customtkinter.CTkButton(root6, text="Input",bd=0,fg_color="#ffffff",text_color="#161C30",text_font=('arial', 22,), command=printInput).place(x=140,y=600)
+    customtkinter.CTkButton(root6, text="Predict",bd=0,fg_color="#ffffff",text_color="#161C30",text_font=('arial', 22,), command=ProgressBar).place(x=140,y=650)
+    inputtxt = tk.Text(root6, height=1, width=20)
+    inputtxt.pack()
+    global lbl
+    lbl = tk.Label(root6, text="",height=20,width=55,wraplength=375)
+    lbl.pack()
+
     my_tree["column"] = list(df.columns)            #setup new treeview
     my_tree["show"] = "headings"
 
-    for column in my_tree["column"]:  # Loop thru column list
-        my_tree.heading(column, text=column, anchor=CENTER)
-
           #put data in treeview
-    df1=df['Gene name'].drop_duplicates()
+    df['YYYY-MM-DD'] = pd.to_datetime(df['YYYY-MM-DD'], errors='ignore')
+    df = df.sort_values(by='YYYY-MM-DD')
+    df1=df['Gene name'].unique()
+    i=1
     for rows in df1:
-        my_tree.insert("","end",value=rows)
+        my_tree.insert("","end",value=str(i)+' '+rows)
+        i=i+1
 
     my_tree.pack()                  #pack the treeview finally
-    root.mainloop()
+    root6.mainloop()
 
 DataSet()
