@@ -423,6 +423,7 @@ def PredictionWindow():
                 super(Root, self).__init__()
                 self.title("Progress Bar")
                 self.minsize(400, 100)
+                self.resizable(False, False)
                 self["bg"] = "#161C30"
                 self.buttonFrame = ttk.LabelFrame(self, text="")
                 self.buttonFrame.place(x=150, y=80)
@@ -447,21 +448,35 @@ def PredictionWindow():
         root = Root()
         root.mainloop()
 
+    def ProgressBar1():
+
+        root7 = Tk()
+        root7.geometry("400x100")
+        root7.resizable(False, False)
+        root7["bg"] = "#161C30"
+        root7.title("Genetrix")
+
+        Label(root7, text="Please Enter a Integer of the Gene Name", bg="#161C30", fg="white",font=("monospace", 15, "bold"), width=40, bd=4).pack()
+        customtkinter.CTkButton(root7, text="Cancel", bd=0, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=root7.destroy).place(x=140, y=50)
+
+        root7.mainloop()
+
     def DataSet():
         global df
-        global root
-        root = Tk()
-        root.geometry("403x750")
-        root["bg"] = "#161C30"
+        global root6
+        root6 = Tk()
+        root6.geometry("403x750")
+        root6["bg"] = "#161C30"
+        root6.resizable(False, False)
         style = ttk.Style()
         style.theme_use('clam')
-        my_frame = Frame(root)  # create frame
+        my_frame = Frame(root6)  # create frame
         my_frame.pack(pady=20)
         my_tree = ttk.Treeview(my_frame)  # create treeview
 
         df = pd.read_csv(askopenfilename())  # path
 
-        customtkinter.CTkButton(root, text="Back", bd=0, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22,), command=root.destroy).place(x=140, y=700)
+        customtkinter.CTkButton(root6, text="Back", bd=0, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22,), command=ModelBack).place(x=140, y=700)
 
         def printInput():
             global inp
@@ -469,15 +484,14 @@ def PredictionWindow():
             lbl.config(text="Sequence: " + str(inp))
             print(inp)
 
-        tk.Label(root, text="Enter Int:", height=1, width=10).place(x=40, y=270)
-        customtkinter.CTkButton(root, text="Input", bd=0, fg_color="#ffffff", text_color="#161C30",
-                                text_font=('arial', 22,), command=printInput).place(x=140, y=600)
-        customtkinter.CTkButton(root, text="Predict", bd=0, fg_color="#ffffff", text_color="#161C30",
-                                text_font=('arial', 22,), command=ProgressBar).place(x=140, y=650)
-        inputtxt = tk.Text(root, height=1, width=20)
+        Button(root6, text="Enter", bd=0, command=ProgressBar1).place(x=70, y=270)
+        # tk.Label(root6, text="Enter Int:", height=1, width=10).place(x=40,y=270)
+        customtkinter.CTkButton(root6, text="Input", bd=0, fg_color="#ffffff", text_color="#161C30",text_font=('arial', 22,), command=printInput).place(x=140, y=600)
+        customtkinter.CTkButton(root6, text="Predict", bd=0, fg_color="#ffffff", text_color="#161C30",text_font=('arial', 22,), command=ProgressBar).place(x=140, y=650)
+        inputtxt = tk.Text(root6, height=1, width=20)
         inputtxt.pack()
         global lbl
-        lbl = tk.Label(root, text="", height=20, width=55, wraplength=375)
+        lbl = tk.Label(root6, text="", height=20, width=55, wraplength=375)
         lbl.pack()
 
         my_tree["column"] = list(df.columns)  # setup new treeview
@@ -485,111 +499,21 @@ def PredictionWindow():
 
         # put data in treeview
         df['YYYY-MM-DD'] = pd.to_datetime(df['YYYY-MM-DD'], errors='ignore')
-
         df = df.sort_values(by='YYYY-MM-DD')
         df1 = df['Gene name'].unique()
-        i = 0
+        i = 1
         for rows in df1:
             my_tree.insert("", "end", value=str(i) + ' ' + rows)
             i = i + 1
 
         my_tree.pack()  # pack the treeview finally
-        root.mainloop()
+        root6.mainloop()
 
     DataSet()
 
-    def ProgressBar():
-        class Root(Tk):
-            def __init__(self):
-                super(Root, self).__init__()
-                self.title("Progress Bar")
-                self.minsize(400, 100)
-                self["bg"] = "#161C30"
-                self.buttonFrame = ttk.LabelFrame(self, text="")
-                self.buttonFrame.place(x=150, y=80)
-                self.progressBar()
-                self.run_progressbar()
-
-            def progressBar(self):
-                self.progress_bar = ttk.Progressbar(self, orient='horizontal', length=286, mode='determinate')
-                self.progress_bar.place(x=60, y=50)
-
-            def run_progressbar(self):
-                self.progress_bar["maximum"] = 100
-
-                for i in range(101):
-                    time.sleep(0.05)
-                    self.progress_bar["value"] = i
-                    self.progress_bar.update()
-                self.destroy()
-                Model()
-                self.progress_bar["value"] = 0
-
-        root = Root()
-        root.mainloop()
-
-    def SelectGene():
-        global frame
-        global lbl
-        root.destroy()
-        frame = tk.Tk()
-        frame.title("TextBox Input")
-        frame.geometry('350x170')
-        frame["bg"] = "#161C30"
-        def printInput():
-            inp = inputtxt.get(1.0, "end-1c")
-            lbl.config(text="Sequence: " + inp)
-            print(inp)
-
-        inputtxt = tk.Text(frame, height=1, width=20)
-
-        inputtxt.pack()
-
-        printButton = customtkinter.CTkButton(frame, text="Input", command=printInput)
-        printButton.pack()
-        ModelButton = customtkinter.CTkButton(frame, text="Predict", command=ProgressBar)
-        ModelButton.place(x=116,y=75)
-        ModelButtonBack = customtkinter.CTkButton(frame, text="Back", command=ModelBack)
-        ModelButtonBack.place(x=116,y=115)
-
-        lbl = tk.Label(frame, text="")
-        lbl.pack()
-        frame.mainloop()
-
-    def DataSet():
-        global df
-        global root
-        root = Tk()
-        root.geometry("203x390")
-        root["bg"] = "#161C30"
-        style = ttk.Style()
-        style.theme_use('clam')
-        my_frame = Frame(root)  # create frame
-        my_frame.pack(pady=20)
-        my_tree = ttk.Treeview(my_frame)  # create treeview
-
-        df = pd.read_csv(askopenfilename())  # path
-
-        customtkinter.CTkButton(root, text="Select Gene", bd=0, height=50, width=180, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=SelectGene).pack()
-        customtkinter.CTkButton(root, text="Back", bd=0, height=50, width=182, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22,), command=SelectGeneBack).place(x=10,y=330)
-        my_tree["column"] = list(df.columns)  # setup new treeview
-        my_tree["show"] = "headings"
-
-        for column in my_tree["column"]:  # Loop thru column list
-            my_tree.heading(column, text=column, anchor=CENTER)
-
-        # put data in treeview
-        df1 = df['Gene name'].drop_duplicates()
-        for rows in df1:
-            my_tree.insert("", "end", value=rows)
-
-        my_tree.pack()  # pack the treeview finally
-        root.mainloop()
-
-    DataSet()
 
 def ModelBack():
-    frame.destroy()
+    root6.destroy()
     Analysis()
 
 def SelectGeneBack():
@@ -693,7 +617,7 @@ def BarPlot():
 
     # dimensions of the main window
     window.geometry("1100x650")
-
+    window.resizable(False, False)
     # button that displays the plot
     customtkinter.CTkButton(master=window, height=2, width=10, text="Browse file 1",command=get_data_frame1).place(x=280,y=0)
     customtkinter.CTkButton(master=window, height=2, width=10, text="Browse file 2",command=get_data_frame2).place(x=400,y=0)
@@ -775,7 +699,7 @@ def ClusterPlot():
 
     # dimensions of the main window
     window3.geometry("1100x650")
-
+    window3.resizable(False, False)
     # button that displays the plot
     customtkinter.CTkButton(master=window3, height=2, width=10, text="Browse file 1",command=get_data_frame3).place(x=280,y=0)
     customtkinter.CTkButton(master=window3, height=2, width=10, text="Browse file 2",command=get_data_frame4).place(x=400,y=0)
@@ -856,6 +780,7 @@ def LocationPlot():
 
     # dimensions of the main window
     window4.geometry("1100x740")
+    window4.resizable(False, False)
 
     # button that displays the plot
     customtkinter.CTkButton(master=window4, height=2, width=10, text="Browse file 1",command=get_data_frame5).place(x=280,y=0)
@@ -941,7 +866,7 @@ def GenePlot():
 
     # dimensions of the main window
     window5.geometry("1100x650")
-
+    window5.resizable(False, False)
     # button that displays the plot
     customtkinter.CTkButton(master=window5, height=2, width=10, text="Browse file 1",command=get_data_frame7).place(x=280,y=0)
     customtkinter.CTkButton(master=window5, height=2, width=10, text="Browse file 2",command=get_data_frame8).place(x=400,y=0)
@@ -954,6 +879,7 @@ def nextwindow():
     win = Tk()
     # Set the geometry of tkinter frame
     win.geometry("700x400")
+    win.resizable(False, False)
     # Create a text widget and wrap by words
     text = Text(win, wrap=WORD)
     text.insert(INSERT,"SARS-CoV-2-Dashboard \n \n The rapid spread of the coronavirus disease 2019 (COVID19) pandemic, which was caused by the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) coronavirus, has resulted in 95,932,739 confirmed cases. As of January 20, 2021, there had been 2 054 853 cases and 2,054, 853 fatalities. In the twenty-first century, there have been three significant outbreaks of fatal pneumonia this century. SARS-CoV (2002), Middle East, caused by b-coronaviruses MERS-CoV (respiratory syndrome coronavirus) (2012), and SARS-CoV-2 is a virus that causes SARS (2019). Clustering is a Machine Learning Technique that involves the grouping of data points. Given a set of data points, researchers can use a clustering algorithm to classify each data point into a specific group. Creating mutation clusters which depend on certain features of the virus will be easier using clustering algorithms. There is much research conducted regarding mutation clustering (other types of viruses and diseases) following few of them directly regarding SARS CoV-2 mutations. In this research, researchers try to go beyond gene-based clustering of CoV-2 mutations to predict the manner Covid-19 mutates next using analytical techniques.")
@@ -983,6 +909,7 @@ def Cluster():
     class mclass:
         def __init__(self, window):
             self.window = window
+            self.window.resizable(False, False)
             customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=300,y=0)
             self.button3 = customtkinter.CTkButton(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
