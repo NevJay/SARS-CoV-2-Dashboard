@@ -166,6 +166,7 @@ def ProgressBar():
             super(Root, self).__init__()
             self.title("Progress Bar")
             self.minsize(400, 100)
+            self.resizable(False, False)
             self["bg"] = "#161C30"
             self.buttonFrame = ttk.LabelFrame(self, text="")
             self.buttonFrame.place(x=150,y=80)
@@ -190,17 +191,18 @@ def ProgressBar():
     root.mainloop()
 
 def ProgressBar1():
-    class Root7(Tk):
-        def __init__(self):
-            super(Root7, self).__init__()
-            self.title("Progress Bar")
-            self.minsize(400, 100)
-            self["bg"] = "#161C30"
-            #self.buttonFrame = ttk.LabelFrame(self, text="")
-            #self.buttonFrame.place(x=150, y=80)
 
-    root = Root7()
-    root.mainloop()
+    root7 = Tk()
+    root7.geometry("400x100")
+    root7.resizable(False, False)
+    root7["bg"] = "#161C30"
+    root7.title("Genetrix")
+
+    Label(root7, text="Please Enter a Integer of the Gene Name", bg="#161C30", fg="white", font=("monospace", 15, "bold"), width=40,bd=4).pack()
+    customtkinter.CTkButton(root7, text="Cancel", bd=0, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22),command=root7.destroy).place(x=140,y=50)
+
+    root7.mainloop()
+
 
 def DataSet():
     global df
@@ -208,6 +210,7 @@ def DataSet():
     root6=Tk()
     root6.geometry("403x750")
     root6["bg"] = "#161C30"
+    root6.resizable(False, False)
     style = ttk.Style()
     style.theme_use('clam')
     my_frame = Frame(root6)          #create frame
