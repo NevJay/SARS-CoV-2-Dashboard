@@ -189,21 +189,34 @@ def ProgressBar():
     root = Root()
     root.mainloop()
 
+def ProgressBar1():
+    class Root7(Tk):
+        def __init__(self):
+            super(Root7, self).__init__()
+            self.title("Progress Bar")
+            self.minsize(400, 100)
+            self["bg"] = "#161C30"
+            #self.buttonFrame = ttk.LabelFrame(self, text="")
+            #self.buttonFrame.place(x=150, y=80)
+
+    root = Root7()
+    root.mainloop()
+
 def DataSet():
     global df
-    global root
-    root=Tk()
-    root.geometry("403x750")
-    root["bg"] = "#161C30"
+    global root6
+    root6=Tk()
+    root6.geometry("403x750")
+    root6["bg"] = "#161C30"
     style = ttk.Style()
     style.theme_use('clam')
-    my_frame = Frame(root)          #create frame
+    my_frame = Frame(root6)          #create frame
     my_frame.pack(pady=20)
     my_tree = ttk.Treeview(my_frame)            #create treeview
 
     df = pd.read_csv(askopenfilename())     #path
 
-    customtkinter.CTkButton(root, text="Back", bd=0,text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=root.destroy).place(x=140,y=700)
+    customtkinter.CTkButton(root6, text="Back", bd=0,text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=root6.destroy).place(x=140,y=700)
 
     def printInput():
         global inp
@@ -211,13 +224,14 @@ def DataSet():
         lbl.config(text="Sequence: " + str(inp))
         print(inp)
 
-    tk.Label(root, text="Enter Int:", height=1, width=10).place(x=40,y=270)
-    customtkinter.CTkButton(root, text="Input",bd=0,fg_color="#ffffff",text_color="#161C30",text_font=('arial', 22,), command=printInput).place(x=140,y=600)
-    customtkinter.CTkButton(root, text="Predict",bd=0,fg_color="#ffffff",text_color="#161C30",text_font=('arial', 22,), command=ProgressBar).place(x=140,y=650)
-    inputtxt = tk.Text(root, height=1, width=20)
+    Button(root6, text="Enter", bd=0,command=ProgressBar1).place(x=70,y=270)
+    #tk.Label(root6, text="Enter Int:", height=1, width=10).place(x=40,y=270)
+    customtkinter.CTkButton(root6, text="Input",bd=0,fg_color="#ffffff",text_color="#161C30",text_font=('arial', 22,), command=printInput).place(x=140,y=600)
+    customtkinter.CTkButton(root6, text="Predict",bd=0,fg_color="#ffffff",text_color="#161C30",text_font=('arial', 22,), command=ProgressBar).place(x=140,y=650)
+    inputtxt = tk.Text(root6, height=1, width=20)
     inputtxt.pack()
     global lbl
-    lbl = tk.Label(root, text="",height=20,width=55,wraplength=375)
+    lbl = tk.Label(root6, text="",height=20,width=55,wraplength=375)
     lbl.pack()
 
     my_tree["column"] = list(df.columns)            #setup new treeview
@@ -225,15 +239,14 @@ def DataSet():
 
           #put data in treeview
     df['YYYY-MM-DD'] = pd.to_datetime(df['YYYY-MM-DD'], errors='ignore')
-
     df = df.sort_values(by='YYYY-MM-DD')
     df1=df['Gene name'].unique()
-    i=0
+    i=1
     for rows in df1:
         my_tree.insert("","end",value=str(i)+' '+rows)
         i=i+1
 
     my_tree.pack()                  #pack the treeview finally
-    root.mainloop()
+    root6.mainloop()
 
 DataSet()
