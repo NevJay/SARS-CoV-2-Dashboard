@@ -85,7 +85,7 @@ class LoginPage(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         # change title
-        self.master.title('Login System')
+        self.master.title('Login/Sign up')
         # icons used
         self.bg = PhotoImage(file='g898.png')
 
@@ -453,6 +453,7 @@ def PredictionWindow():
         root7 = Tk()
         root7.geometry("400x100")
         root7.resizable(False, False)
+        root7.title('Genetrix')
         root7["bg"] = "#161C30"
         root7.title("Genetrix")
 
@@ -468,6 +469,7 @@ def PredictionWindow():
         root6.geometry("403x750")
         root6["bg"] = "#161C30"
         root6.resizable(False, False)
+        root6.title('Predicted Data')
         style = ttk.Style()
         style.theme_use('clam')
         my_frame = Frame(root6)  # create frame
@@ -880,6 +882,7 @@ def nextwindow():
     # Set the geometry of tkinter frame
     win.geometry("700x400")
     win.resizable(False, False)
+    win.title('About')
     # Create a text widget and wrap by words
     text = Text(win, wrap=WORD)
     text.insert(INSERT,"SARS-CoV-2-Dashboard \n \n The rapid spread of the coronavirus disease 2019 (COVID19) pandemic, which was caused by the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) coronavirus, has resulted in 95,932,739 confirmed cases. As of January 20, 2021, there had been 2 054 853 cases and 2,054, 853 fatalities. In the twenty-first century, there have been three significant outbreaks of fatal pneumonia this century. SARS-CoV (2002), Middle East, caused by b-coronaviruses MERS-CoV (respiratory syndrome coronavirus) (2012), and SARS-CoV-2 is a virus that causes SARS (2019). Clustering is a Machine Learning Technique that involves the grouping of data points. Given a set of data points, researchers can use a clustering algorithm to classify each data point into a specific group. Creating mutation clusters which depend on certain features of the virus will be easier using clustering algorithms. There is much research conducted regarding mutation clustering (other types of viruses and diseases) following few of them directly regarding SARS CoV-2 mutations. In this research, researchers try to go beyond gene-based clustering of CoV-2 mutations to predict the manner Covid-19 mutates next using analytical techniques.")
@@ -910,6 +913,7 @@ def Cluster():
         def __init__(self, window):
             self.window = window
             self.window.resizable(False, False)
+            self.window.title('Clustered Data')
             customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=300,y=0)
             self.button3 = customtkinter.CTkButton(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
