@@ -28,6 +28,12 @@ import warnings
 warnings.filterwarnings('ignore')
 import statsmodels.api as sm
 import squarify
+from fpdf import FPDF
+from datetime import datetime, timedelta
+import os
+from datetime import date
+from PIL import Image
+from io import BytesIO
 
 def showPassword(event):
     wdgt = event.widget
@@ -541,12 +547,89 @@ def Finish():
    customtkinter.CTkButton(win12,bd=0, height=50, width=50,text_color="#161C30",fg_color="#ffffff", text= "Ok", background= "white",text_font=('arial', 22), command= win12.destroy).pack()
    win12.mainloop()
 
+def ReportFinish():
+    win13 = Tk()
+    win13.geometry("400x100")
+    Label(win13, text= "Analysis Completed", font=("monospace", 20, "bold")).pack()
+    customtkinter.CTkButton(win13,bd=0, height=50, width=50,text_color="#161C30",fg_color="#ffffff", text= "Ok", background= "white",text_font=('arial', 22), command= win13.destroy).pack()
+    win13.mainloop()
+
+def Report():
+    WIDTH = 210
+    HEIGHT = 297
+
+    TEST_DATE = date.today()
+
+    def create_title(day, pdf):
+        # Unicode is not yet supported in the py3k version; use windows-1252 standard font
+        pdf.set_font('Helvetica', '', 24)
+        pdf.ln(60)
+        pdf.write(5, f"Covid-19 Data Analytics Report")
+        pdf.ln(10)
+        pdf.set_font('Helvetica', '', 16)
+        pdf.write(4, f'{day}')
+        pdf.ln(5)
+
+    def create_analytics_report(day=date.today(), filename="report.pdf"):
+        pdf = FPDF()  # A4 (210 by 297 mm)
+
+        states = ['Massachusetts', 'New Hampshire']
+
+        ''' First Page '''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\resources\letterhead_cropped.png", 0, 0, WIDTH)
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\resources\bottom.png", 0, 230, WIDTH)
+        create_title(TEST_DATE, pdf)
+
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\resources\usa_cases.png", 5, 100, 200)
+        i = Image.open(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\treemap.png")
+        width, height = i.size
+        print(width, height)
+        i = i.resize((1000, 1000))
+        i.save(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\\resizedtreemap.png", dpi=(500, 500))
+
+        '''Second Page'''
+        pdf.add_page()
+
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\pairplot.png", 5, 20, 200)
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\raby.png", 5, 220, 200)
+        pdf.write(4, f"Overview of data")
+        # pdf.image("/Users/dewyanthilakasiri/Downloads/Final/resizedtreemap.png", 5, 200, 120)
+
+        '''Third Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\clusterbyloc.png", 5, 0, 200)
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\mutationsinclusters.png", 5, 210, 200)
+
+        '''Fourth Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\resizedtreemap.png", 5, 0, 200)
+        # pdf.image("/Users/dewyanthilakasiri/Downloads/Final/resizedcross.png", 5, 180, 200)
+
+        '''Fifth Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\mutationsXcountry.png", 5, 0, 200)
+        # pdf.image("/Users/dewyanthilakasiri/Downloads/Final/mutationsXcountry.png", 5, 120, 200)
+
+        '''Fifth Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\timeXcases.png", 5, 10, 200)
+
+        pdf.output(filename, 'F')
+
+    if __name__ == '__main__':
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%m/%d/%y").replace("/0", "/").lstrip("0")
+        yesterday = "10/10/20"  # Uncomment line for testing
+
+        create_analytics_report(yesterday)
+        ReportFinish()
+
 def Graphs():
     def Plotting():
         # Load data
         dat = df_a11
         dat.rename(columns={'cluster': 'Cluster'}, inplace=True)
-        print(dat.shape)
+        # print(dat.shape)
         dat.head(5)
 
         df = dat[['Gene name', 'Isolate name', 'YYYY-MM-DD', 'Isolate ID', 'Location', 'DNAENC', 'Cluster']]
@@ -569,10 +652,11 @@ def Graphs():
         x.corr()
 
         def pairplot():
-            plt.title("Overview of the Dataset")
+            # plt.title("Overview of the Dataset")
             sns.set(rc={'figure.figsize': (50, 50)})
             sns.pairplot(x)
             plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\pairplot.png')
+            # plt.show()
 
         # with regression
         def regression():
@@ -583,9 +667,10 @@ def Graphs():
 
         def crosstab():
             sns.heatmap(pd.crosstab(df["Location"], df["Gene name"]), cmap="Greens")
-            sns.set(rc={'figure.figsize': (50, 50)})
+            # sns.set(rc = {'figure.figsize':(100,100)})
+            plt.title("Gene Distribution based on Country" + "\n", fontsize=10, fontweight="bold")
             plt.tight_layout()
-            plt.title("Gene Distribution based on Country", fontsize=10, fontweight="bold")
+            # plt.figure(figsize = (100, 100))
             plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\crosstab.png')
             # plt.show()
 
@@ -596,7 +681,7 @@ def Graphs():
             location.drop(location[location['Total Cases'] < 200].index, inplace=True)
             plt.title("Mutation Distribution based on Country", fontsize=100, fontweight="bold")
             sns.barplot(x="Location", y="Total Cases", data=location)
-            plt.title("Number of Mutations based on Location", size=20)
+            plt.title("Number of Mutations based on Location", size=40)
             plt.xlabel("Location", size=20)
             plt.ylabel("Number of Mutations", size=20)
             plt.xticks(size=15, rotation=60)
@@ -620,7 +705,7 @@ def Graphs():
             # plt.title("Total Cases Over Time",fontsize=100,fontweight="bold")
             plt.figure(figsize=(15, 15))
             sns.barplot(x="Date", y="Total Cases", data=date)
-            plt.title("Total Cases Over Time", size=20)
+            plt.title("Total Cases Over Time", size=40)
             plt.tick_params(left=True, bottom=False, labelleft=True,
                             labelbottom=False)
             plt.tight_layout()
@@ -636,7 +721,7 @@ def Graphs():
             plt.figure(figsize=(100, 100))
             MEDIUM_SIZE = 200
 
-            plt.title("Gene Distribution", fontsize=200, fontweight="bold")
+            plt.title("Gene Distribution" + "\n", fontsize=200, fontweight="bold")
             squarify.plot(sizes=genename['Total Cases'], label=genename['Gene name'], alpha=.8,
                           text_kwargs={'fontsize': 60}, color=sns.color_palette("flare"))
             plt.axis('off')
@@ -648,7 +733,7 @@ def Graphs():
             sns.set_style("whitegrid")
             plt.figure(figsize=(18, 7))
             sns.barplot(x="cluster", y="Count", data=cluster)
-            plt.title("Clusters", size=20)
+            plt.title("Clusters Categorized", size=20)
             plt.xlabel("Clusters", size=20)
             plt.ylabel("Count", size=20)
             plt.xticks(size=15, rotation=0)
@@ -665,7 +750,7 @@ def Graphs():
             plt.figure(figsize=(20, 20))
             # plt.legend(fontsize=20)
             sns.barplot(x="Location", y="count", hue="Cluster", data=location_and_cluster)
-            plt.title("Mutations and Clusters based on location", size=20)
+            plt.title("Mutations and Clusters based on location", size=40)
             plt.xlabel("Location", size=20)
             plt.ylabel("Mutations in each Cluster", size=20)
             plt.xticks(size=15, rotation=90)
@@ -679,7 +764,7 @@ def Graphs():
             plt.figure(figsize=(18, 7))
             # plt.legend(fontsize=20)
             sns.barplot(x="Gene name", y="count", hue="Cluster", data=genename_and_cluster)
-            plt.title("Mutation Clusters based on Gene name", size=20)
+            plt.title("Mutation Clusters based on Gene name", size=40)
             plt.xlabel("Gene name", size=20)
             plt.ylabel("Mutations in each Cluster", size=20)
             plt.xticks(size=15, rotation=60)
@@ -701,7 +786,6 @@ def Graphs():
 
         other()
         cluss()
-        root2.destroy()
         Finish()
 
     def get_data_frame11():
@@ -724,7 +808,7 @@ def Graphs():
         Label(root2, text="Welcome To Genetrix Analysis", bg="black", fg="white", font=("monospace", 20, "bold"),width=40, bd=4, relief=RIDGE).pack(side=TOP, fill=X)
         customtkinter.CTkButton(root2, text="BROWSE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=get_data_frame11).place(x=110,y=240)
         customtkinter.CTkButton(root2, text="ANALYSE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=Plotting).place(x=110, y=310)
-        customtkinter.CTkButton(root2, text="GENERATE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22)).place(x=110, y=380)
+        customtkinter.CTkButton(root2, text="GENERATE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=Report).place(x=110, y=380)
         customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command="MainBack").place(x=110, y=450)
 
         root2.mainloop()
