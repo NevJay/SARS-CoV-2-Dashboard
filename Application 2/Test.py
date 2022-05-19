@@ -542,16 +542,21 @@ def SelectGeneBack():
 
 def Finish():
    win12 = Tk()
-   win12.geometry("400x100")
+   win12.geometry("270x120")
+   win12.resizable(False, False)
+   win12["bg"] = "#161C30"
+   win12.title("Genetrix")
    Label(win12, text= "Analysis Completed", font=("monospace", 20, "bold")).pack()
-   customtkinter.CTkButton(win12,bd=0, height=50, width=50,text_color="#161C30",fg_color="#ffffff", text= "Ok", background= "white",text_font=('arial', 22), command= win12.destroy).pack()
+   customtkinter.CTkButton(win12,bd=0, height=50, width=50,text_color="#161C30",fg_color="#ffffff", text= "Ok", background= "white",text_font=('arial', 22), command= win12.destroy).place(x=110,y=60)
    win12.mainloop()
 
 def ReportFinish():
     win13 = Tk()
-    win13.geometry("400x100")
-    Label(win13, text= "Analysis Completed", font=("monospace", 20, "bold")).pack()
-    customtkinter.CTkButton(win13,bd=0, height=50, width=50,text_color="#161C30",fg_color="#ffffff", text= "Ok", background= "white",text_font=('arial', 22), command= win13.destroy).pack()
+    win13.geometry("240x120")
+    win13["bg"] = "#161C30"
+    win13.title("Genetrix")
+    Label(win13, text="Report Generated", font=("monospace", 20, "bold")).pack()
+    customtkinter.CTkButton(win13, bd=0, height=50, width=50, text_color="#161C30", fg_color="#ffffff", text="Ok",background="white", text_font=('arial', 22), command=win13.destroy).place(x=90, y=60)
     win13.mainloop()
 
 def Report():
@@ -805,9 +810,9 @@ def Graphs():
         root2["bg"] = "#161C30"
         root2.title("Genetrix")
 
-        Label(root2, text="Welcome To Genetrix Analysis", bg="black", fg="white", font=("monospace", 20, "bold"),width=40, bd=4, relief=RIDGE).pack(side=TOP, fill=X)
+        Label(root2, text="Genetrix Analysis", bg="black", fg="white", font=("monospace", 20, "bold"),width=40, bd=4, relief=RIDGE).pack(side=TOP, fill=X)
         customtkinter.CTkButton(root2, text="BROWSE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=get_data_frame11).place(x=110,y=240)
-        customtkinter.CTkButton(root2, text="ANALYSE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=Plotting).place(x=110, y=310)
+        customtkinter.CTkButton(root2, text="ANALYZE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=Plotting).place(x=110, y=310)
         customtkinter.CTkButton(root2, text="GENERATE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=Report).place(x=110, y=380)
         customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command="MainBack").place(x=110, y=450)
 
