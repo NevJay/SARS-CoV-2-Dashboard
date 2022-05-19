@@ -13,8 +13,6 @@ from tkinter.ttk import Progressbar
 import time
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler
-from tkinter.filedialog import askopenfilename
-import customtkinter
 import pandas as pd
 from tkinter import ttk
 import tkinter as tk
@@ -22,7 +20,20 @@ import csv
 from keras.layers import LSTM, Dense
 from keras.models import Sequential
 from numpy import array
-import time
+from tkinter import *
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+import statsmodels.api as sm
+import squarify
+from fpdf import FPDF
+from datetime import datetime, timedelta
+import os
+from datetime import date
+from PIL import Image
+from io import BytesIO
 
 def showPassword(event):
     wdgt = event.widget
@@ -85,7 +96,7 @@ class LoginPage(Frame):
     def __init__(self, parent, *args, **kwargs):
         Frame.__init__(self, parent, *args, **kwargs)
         # change title
-        self.master.title('Login System')
+        self.master.title('Login/Sign up')
         # icons used
         self.bg = PhotoImage(file='g898.png')
 
@@ -261,7 +272,7 @@ def Analysis():
     Label(root, text="Welcome To Genetrix", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
     customtkinter.CTkButton(root, text="PREDICTED DATA", bd=0, height=50, width=285, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,),command=PredictionWindow).place(x=100, y=170)
     customtkinter.CTkButton(root, text="CLUSTERED DATA", bd=0, height=50, width=60, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=ClusterWindow).place(x=100, y=240)
-    customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=Graphs).place(x=100, y=310)
+    customtkinter.CTkButton(root, text="DATA ANALYSIS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=AnalysisBack).place(x=100, y=310)
     customtkinter.CTkButton(root, text="ABOUT", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=nextwindow).place(x=100, y=380)
     customtkinter.CTkButton(root, text="EXIT", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=root.destroy).place(x=100, y=450)
 
@@ -453,6 +464,7 @@ def PredictionWindow():
         root7 = Tk()
         root7.geometry("400x100")
         root7.resizable(False, False)
+        root7.title('Genetrix')
         root7["bg"] = "#161C30"
         root7.title("Genetrix")
 
@@ -468,6 +480,7 @@ def PredictionWindow():
         root6.geometry("403x750")
         root6["bg"] = "#161C30"
         root6.resizable(False, False)
+        root6.title('Predicted Data')
         style = ttk.Style()
         style.theme_use('clam')
         my_frame = Frame(root6)  # create frame
@@ -497,12 +510,20 @@ def PredictionWindow():
         my_tree["column"] = list(df.columns)  # setup new treeview
         my_tree["show"] = "headings"
 
-        # put data in treeview
-        df['YYYY-MM-DD'] = pd.to_datetime(df['YYYY-MM-DD'], errors='ignore')
-        df = df.sort_values(by='YYYY-MM-DD')
-        df1 = df['Gene name'].unique()
+        data = df
+        data = data.drop('Isolate name', 1)
+        data = data.drop('Isolate ID', 1)
+        data = data.drop('Location', 1)
+
+        data['YYYY-MM-DD'] = pd.to_datetime(data['YYYY-MM-DD'], errors='ignore')
+
+        data = data.sort_values(by='YYYY-MM-DD')
+        global gene_names
+        gene_names = data['Gene name'].unique()
+
+        print(data.head())
         i = 1
-        for rows in df1:
+        for rows in gene_names:
             my_tree.insert("", "end", value=str(i) + ' ' + rows)
             i = i + 1
 
@@ -510,7 +531,6 @@ def PredictionWindow():
         root6.mainloop()
 
     DataSet()
-
 
 def ModelBack():
     root6.destroy()
@@ -520,366 +540,300 @@ def SelectGeneBack():
     root.destroy()
     Analysis()
 
+def Finish():
+   win12 = Tk()
+   win12.geometry("270x120")
+   win12.resizable(False, False)
+   win12["bg"] = "#161C30"
+   win12.title("Genetrix")
+   Label(win12, text= "Analysis Completed", font=("monospace", 20, "bold")).pack()
+   customtkinter.CTkButton(win12,bd=0, height=50, width=50,text_color="#161C30",fg_color="#ffffff", text= "Ok", background= "white",text_font=('arial', 22), command= win12.destroy).place(x=110,y=60)
+   win12.mainloop()
+
+def ReportFinish():
+    win13 = Tk()
+    win13.geometry("240x120")
+    win13["bg"] = "#161C30"
+    win13.title("Genetrix")
+    Label(win13, text="Report Generated", font=("monospace", 20, "bold")).pack()
+    customtkinter.CTkButton(win13, bd=0, height=50, width=50, text_color="#161C30", fg_color="#ffffff", text="Ok",background="white", text_font=('arial', 22), command=win13.destroy).place(x=90, y=60)
+    win13.mainloop()
+
+def Report():
+    WIDTH = 210
+    HEIGHT = 297
+
+    TEST_DATE = date.today()
+
+    def create_title(day, pdf):
+        # Unicode is not yet supported in the py3k version; use windows-1252 standard font
+        pdf.set_font('Helvetica', '', 24)
+        pdf.ln(60)
+        pdf.write(5, f"Covid-19 Data Analytics Report")
+        pdf.ln(10)
+        pdf.set_font('Helvetica', '', 16)
+        pdf.write(4, f'{day}')
+        pdf.ln(5)
+
+    def create_analytics_report(day=date.today(), filename="report.pdf"):
+        pdf = FPDF()  # A4 (210 by 297 mm)
+
+        states = ['Massachusetts', 'New Hampshire']
+
+        ''' First Page '''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\resources\letterhead_cropped.png", 0, 0, WIDTH)
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\resources\bottom.png", 0, 230, WIDTH)
+        create_title(TEST_DATE, pdf)
+
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\resources\usa_cases.png", 5, 100, 200)
+        i = Image.open(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\treemap.png")
+        width, height = i.size
+        print(width, height)
+        i = i.resize((1000, 1000))
+        i.save(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\\resizedtreemap.png", dpi=(500, 500))
+
+        '''Second Page'''
+        pdf.add_page()
+
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\pairplot.png", 5, 20, 200)
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\raby.png", 5, 220, 200)
+        pdf.write(4, f"Overview of data")
+        # pdf.image("/Users/dewyanthilakasiri/Downloads/Final/resizedtreemap.png", 5, 200, 120)
+
+        '''Third Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\clusterbyloc.png", 5, 0, 200)
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\mutationsinclusters.png", 5, 210, 200)
+
+        '''Fourth Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\resizedtreemap.png", 5, 0, 200)
+        # pdf.image("/Users/dewyanthilakasiri/Downloads/Final/resizedcross.png", 5, 180, 200)
+
+        '''Fifth Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\mutationsXcountry.png", 5, 0, 200)
+        # pdf.image("/Users/dewyanthilakasiri/Downloads/Final/mutationsXcountry.png", 5, 120, 200)
+
+        '''Fifth Page'''
+        pdf.add_page()
+        pdf.image(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\timeXcases.png", 5, 10, 200)
+
+        pdf.output(filename, 'F')
+
+    if __name__ == '__main__':
+        yesterday = (datetime.today() - timedelta(days=1)).strftime("%m/%d/%y").replace("/0", "/").lstrip("0")
+        yesterday = "10/10/20"  # Uncomment line for testing
+
+        create_analytics_report(yesterday)
+        ReportFinish()
+
 def Graphs():
-    root.destroy()
-    global root2
-    root2 = Tk()
-    root2.geometry("540x708")
-    root2.resizable(False, False)
-    root2["bg"] = "#161C30"
-    root2.title("Genetrix")
+    def Plotting():
+        # Load data
+        dat = df_a11
+        dat.rename(columns={'cluster': 'Cluster'}, inplace=True)
+        # print(dat.shape)
+        dat.head(5)
 
-    Label(root2, text="Welcome To Genetrix Plots", bg="black", fg="white", font=("monospace", 20, "bold"), width=40, bd=4,relief=RIDGE).pack(side=TOP, fill=X)
-    customtkinter.CTkButton(root2, text="BARPLOT", bd=0, height=50, width=510, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22,), command=BarPlot).place(x=18, y=170)
-    customtkinter.CTkButton(root2, text="CLUSTERPLOT", bd=0, height=50, width=510, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=ClusterPlot).place(x=18, y=240)
-    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON LOCATIONS", bd=0, height=50, width=284, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=LocationPlot).place(x=18, y=310)
-    customtkinter.CTkButton(root2, text="CLUSTERS BASED ON GENE NAME", bd=0, height=50, width=282, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22),command=GenePlot).place(x=18, y=380)
-    customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=515, text_color="#161C30", fg_color="#ffffff",text_font=('arial', 22), command=MainBack).place(x=18, y=450)
-
-    root2.mainloop()
-
-def MainBack():
-    root2.destroy()
-    Analysis()
-
-def get_data_frame1():
-    global df_a1
-    global col
-    file_name = askopenfilename()
-    df_a1 = pd.read_csv(file_name)
-    col = list(df_a1)
-    print(col)
-
-def get_data_frame2():
-    global df_a2
-    global col
-    file_name = askopenfilename()
-    df_a2 = pd.read_csv(file_name)
-    col = list(df_a2)
-    print(col)
-
-def BarPlot():
-    root2.destroy()
-    def plot():
-        # the figure that will contain the plot
-        fig = Figure(figsize=(15, 5.75), dpi=100)
-        df_a=df_a1
-        df_a.head(2)
-
-        df_v = df_a2
-        df_v.head(2)
-
-        df = pd.merge(df_a, df_v, left_index=True, right_index=True)
-        df.head(2)
+        df = dat[['Gene name', 'Isolate name', 'YYYY-MM-DD', 'Isolate ID', 'Location', 'DNAENC', 'Cluster']]
 
         location = df["Location"]
         location = pd.DataFrame(location)
         location = pd.DataFrame(location.value_counts().sort_index()).reset_index()
         location.columns = ["Location", "Total Cases"]
-        # print(location.value_counts().sum)
 
-        len(df_v.index)
-
-        # adding the subplot
-        plot1 = fig.add_subplot(111)
-
-        # plotting the graph
-        plot1.bar(location["Location"], location["Total Cases"])
-        plot1.set_title('Number of Mutations based on Location')
-        plot1.set_xlabel('Location')
-        plot1.set_ylabel('Number of Mutations')
-        plot1.set_xticklabels(location["Location"], rotation=25, fontsize=6)
-
-        # creating the Tkinter canvas
-        # containing the Matplotlib figure
-        canvas = FigureCanvasTkAgg(fig, master=window)
-        canvas.draw()
-
-        # placing the canvas on the Tkinter window
-        canvas.get_tk_widget().pack()
-
-        # creating the Matplotlib toolbar
-        toolbar = NavigationToolbar2Tk(canvas, window)
-        toolbar.update()
-
-        # placing the toolbar on the Tkinter window
-        canvas.get_tk_widget().pack()
-
-    def BarplotBack():
-        window.destroy()
-        Analysis()
-
-    # the main Tkinter window
-    window = Tk()
-
-    # setting the title
-    window.title('Plotting in Tkinter')
-
-    # dimensions of the main window
-    window.geometry("1100x650")
-    window.resizable(False, False)
-    # button that displays the plot
-    customtkinter.CTkButton(master=window, height=2, width=10, text="Browse file 1",command=get_data_frame1).place(x=280,y=0)
-    customtkinter.CTkButton(master=window, height=2, width=10, text="Browse file 2",command=get_data_frame2).place(x=400,y=0)
-    customtkinter.CTkButton(master=window, command=plot, height=2, width=10, text="Plot").pack()
-    customtkinter.CTkButton(master=window, command=BarplotBack, height=2, width=10, text="Back").place(x=1000,y=0)
-
-    # run the gui
-    window.mainloop()
-
-def get_data_frame3():
-    global df_a3
-    global col
-    file_name = askopenfilename()
-    df_a3 = pd.read_csv(file_name)
-    col = list(df_a3)
-    print(col)
-
-def get_data_frame4():
-    global df_a4
-    global col
-    file_name = askopenfilename()
-    df_a4 = pd.read_csv(file_name)
-    col = list(df_a4)
-    print(col)
-
-def ClusterPlot():
-    root2.destroy()
-    def plot():
-        # the figure that will contain the plot
-        fig = Figure(figsize=(15, 5.75), dpi=100)
-
-        df_a = df_a3
-        df_a.head(2)
-
-        df_v = df_a4
-        df_v.head(2)
-
-        df = pd.merge(df_a, df_v, left_index=True, right_index=True)
-        df.head(2)
-
-        cluster = df["Cluster"]
+        cluster = dat["Cluster"]
         cluster = pd.DataFrame(cluster)
         cluster = pd.DataFrame(cluster.value_counts().sort_index()).reset_index()
-        cluster.columns = ["Cluster", "Count"]
+        cluster.columns = ["cluster", "Count"]
         cluster
 
-        # adding the subplot
-        plot1 = fig.add_subplot(111)
+        clus = dat[(dat["Cluster"] == 0) | (dat["Cluster"] == 1) | (dat["Cluster"] == 2) | (dat["Cluster"] == 3)]
 
-        # plotting the graph
-        plot1.bar(cluster["Cluster"], cluster["Count"])
-        plot1.set_title('ClusterPlot')
-        plot1.set_xlabel('Location')
-        plot1.set_ylabel('Count')
+        x = df.apply(lambda x: x.factorize()[0]).corr()
 
-        # creating the Tkinter canvas
-        # containing the Matplotlib figure
-        canvas = FigureCanvasTkAgg(fig, master=window3)
-        canvas.draw()
+        x.corr()
 
-        # placing the canvas on the Tkinter window
-        canvas.get_tk_widget().pack()
+        def pairplot():
+            # plt.title("Overview of the Dataset")
+            sns.set(rc={'figure.figsize': (50, 50)})
+            sns.pairplot(x)
+            plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\pairplot.png')
+            # plt.show()
 
-        # creating the Matplotlib toolbar
-        toolbar = NavigationToolbar2Tk(canvas, window3)
-        toolbar.update()
+        # with regression
+        def regression():
+            plt.title("Overview with Regression applied")
+            sns.set(rc={'figure.figsize': (50, 50)})
+            sns.pairplot(x, kind="reg")
+            plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\regression.png')
 
-        # placing the toolbar on the Tkinter window
-        canvas.get_tk_widget().pack()
-    def ClusterPlotBack():
-        window3.destroy()
-        Analysis()
+        def crosstab():
+            sns.heatmap(pd.crosstab(df["Location"], df["Gene name"]), cmap="Greens")
+            # sns.set(rc = {'figure.figsize':(100,100)})
+            plt.title("Gene Distribution based on Country" + "\n", fontsize=10, fontweight="bold")
+            plt.tight_layout()
+            # plt.figure(figsize = (100, 100))
+            plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\crosstab.png')
+            # plt.show()
 
-    # the main Tkinter window
-    window3 = Tk()
+        def mutationsXcountry():
+            sns.set_style("whitegrid")
+            plt.figure(figsize=(20, 20))
 
-    # setting the title
-    window3.title('Plotting in Tkinter')
+            location.drop(location[location['Total Cases'] < 200].index, inplace=True)
+            plt.title("Mutation Distribution based on Country", fontsize=100, fontweight="bold")
+            sns.barplot(x="Location", y="Total Cases", data=location)
+            plt.title("Number of Mutations based on Location", size=40)
+            plt.xlabel("Location", size=20)
+            plt.ylabel("Number of Mutations", size=20)
+            plt.xticks(size=15, rotation=60)
+            plt.yticks(size=15)
+            # plt.tight_layout()
+            plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\mutationsXcountry.png')
+            # plt.show()
+            plt.xticks(rotation=-45)
 
-    # dimensions of the main window
-    window3.geometry("1100x650")
-    window3.resizable(False, False)
-    # button that displays the plot
-    customtkinter.CTkButton(master=window3, height=2, width=10, text="Browse file 1",command=get_data_frame3).place(x=280,y=0)
-    customtkinter.CTkButton(master=window3, height=2, width=10, text="Browse file 2",command=get_data_frame4).place(x=400,y=0)
-    customtkinter.CTkButton(master=window3, command=plot, height=2, width=10, text="Plot").pack()
-    customtkinter.CTkButton(master=window3, command=ClusterPlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
+        def timeXcases():
+            date = df["YYYY-MM-DD"]
+            date = pd.DataFrame(date)
+            date = pd.DataFrame(date.value_counts().sort_index()).reset_index()
+            date.columns = ["Date", "Total Cases"]
+            # location["Total Cases"]
+            date
+            # print(location.value_counts().sum)
 
-    # run the gui
-    window3.mainloop()
-def get_data_frame5():
-    global df_a5
-    global col
-    file_name = askopenfilename()
-    df_a5 = pd.read_csv(file_name)
-    col = list(df_a5)
-    print(col)
+            # date.drop(date[date['Total Cases'] < 800].index, inplace = True)
 
-def get_data_frame6():
-    global df_a6
-    global col
-    file_name = askopenfilename()
-    df_a6 = pd.read_csv(file_name)
-    col = list(df_a6)
-    print(col)
+            # plt.title("Total Cases Over Time",fontsize=100,fontweight="bold")
+            plt.figure(figsize=(15, 15))
+            sns.barplot(x="Date", y="Total Cases", data=date)
+            plt.title("Total Cases Over Time", size=40)
+            plt.tick_params(left=True, bottom=False, labelleft=True,
+                            labelbottom=False)
+            plt.tight_layout()
+            plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\timeXcases.png')
+            # plt.show()
 
-def LocationPlot():
+        def Treemap():
+            genename = df["Gene name"]
+            genename = pd.DataFrame(genename)
+            genename = pd.DataFrame(genename.value_counts().sort_index()).reset_index()
+            genename.columns = ["Gene name", "Total Cases"]
+
+            plt.figure(figsize=(100, 100))
+            MEDIUM_SIZE = 200
+
+            plt.title("Gene Distribution" + "\n", fontsize=200, fontweight="bold")
+            squarify.plot(sizes=genename['Total Cases'], label=genename['Gene name'], alpha=.8,
+                          text_kwargs={'fontsize': 60}, color=sns.color_palette("flare"))
+            plt.axis('off')
+            plt.rc('font', size=MEDIUM_SIZE)
+            # plt.show()
+            plt.savefig(r'C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\treemap.png')
+
+        def clustercat():
+            sns.set_style("whitegrid")
+            plt.figure(figsize=(18, 7))
+            sns.barplot(x="cluster", y="Count", data=cluster)
+            plt.title("Clusters Categorized", size=20)
+            plt.xlabel("Clusters", size=20)
+            plt.ylabel("Count", size=20)
+            plt.xticks(size=15, rotation=0)
+            plt.yticks(size=15)
+            # plt.xticks(rotation = -45)
+            plt.savefig(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\raby.png")
+            # plt.show()
+
+        def clusterbyloc():
+            location_and_cluster = clus.groupby(["Location", "Cluster"])["Cluster"].agg(["count"]).reset_index()
+
+            location_and_cluster.drop(location_and_cluster[location_and_cluster['count'] < 20].index, inplace=True)
+
+            plt.figure(figsize=(20, 20))
+            # plt.legend(fontsize=20)
+            sns.barplot(x="Location", y="count", hue="Cluster", data=location_and_cluster)
+            plt.title("Mutations and Clusters based on location", size=40)
+            plt.xlabel("Location", size=20)
+            plt.ylabel("Mutations in each Cluster", size=20)
+            plt.xticks(size=15, rotation=90)
+            plt.yticks(size=15)
+            plt.savefig(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\clusterbyloc.png")
+
+        def mutationsinclusters():
+            genename_and_cluster = clus.groupby(["Gene name", "Cluster"])["Cluster"].agg(["count"]).reset_index()
+            genename_and_cluster
+
+            plt.figure(figsize=(18, 7))
+            # plt.legend(fontsize=20)
+            sns.barplot(x="Gene name", y="count", hue="Cluster", data=genename_and_cluster)
+            plt.title("Mutation Clusters based on Gene name", size=40)
+            plt.xlabel("Gene name", size=20)
+            plt.ylabel("Mutations in each Cluster", size=20)
+            plt.xticks(size=15, rotation=60)
+            plt.yticks(size=15)
+            plt.savefig(r"C:\Users\Ashen\SARS-CoV-2-Dashboard\Application 2\Plots\mutationsinclusters.png")
+
+        def other():
+            crosstab()
+            timeXcases()
+            regression()
+            pairplot()
+            mutationsXcountry()
+            Treemap()
+
+        def cluss():
+            clusterbyloc()
+            mutationsinclusters()
+            clustercat()
+
+        other()
+        cluss()
+        Finish()
+
+    def get_data_frame11():
+        global df_a11
+        global col
+        file_name = askopenfilename()
+        df_a11 = pd.read_csv(file_name)
+        col = list(df_a11)
+        print(col)
+
+    def Graphs1():
+        # root.destroy()
+        global root2
+        root2 = Tk()
+        root2.geometry("480x708")
+        root2.resizable(False, False)
+        root2["bg"] = "#161C30"
+        root2.title("Genetrix")
+
+        Label(root2, text="Genetrix Analysis", bg="black", fg="white", font=("monospace", 20, "bold"),width=40, bd=4, relief=RIDGE).pack(side=TOP, fill=X)
+        customtkinter.CTkButton(root2, text="BROWSE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=get_data_frame11).place(x=110,y=240)
+        customtkinter.CTkButton(root2, text="ANALYZE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command=Plotting).place(x=110, y=310)
+        customtkinter.CTkButton(root2, text="GENERATE", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22),command=Report).place(x=110, y=380)
+        customtkinter.CTkButton(root2, text="BACK", bd=0, height=50, width=250, text_color="#161C30",fg_color="#ffffff", text_font=('arial', 22), command="MainBack").place(x=110, y=450)
+
+        root2.mainloop()
+
+    Graphs1()
+
+def AnalysisBack():
+    root.destroy()
+    Graphs()
+
+def MainBack():
     root2.destroy()
-    def plot():
-        # the figure that will contain the plot
-        fig = Figure(figsize=(15, 6.7), dpi=100)
-
-        df_a = df_a5
-        df_a.head(2)
-
-        df_v = df_a6
-        df_v.head(2)
-
-        df = pd.merge(df_a, df_v, left_index=True, right_index=True)
-        df.head(2)
-
-        clus = df[(df["Cluster"] == 0) | (df["Cluster"] == 1) | (df["Cluster"] == 2) | (df["Cluster"] == 3)]
-        clus.head(2)
-
-        location_and_cluster = clus.groupby(["Location", "Cluster"])["Cluster"].agg(["count"]).reset_index()
-        location_and_cluster
-
-        # adding the subplot
-        plot1 = fig.add_subplot(111)
-
-        # plotting the graph
-        plot1.bar(location_and_cluster["Location"], location_and_cluster["count"])
-        plot1.set_title('Mutations and Clusters based on location')
-        plot1.set_xlabel('Location')
-        plot1.set_ylabel('Mutations in each Cluster')
-        plot1.set_xticklabels(location_and_cluster["Location"], rotation = 35, fontsize=7)
-        # creating the Tkinter canvas
-        # containing the Matplotlib figure
-        canvas = FigureCanvasTkAgg(fig, master=window4)
-        canvas.draw()
-
-        # placing the canvas on the Tkinter window
-        canvas.get_tk_widget().pack()
-
-        # creating the Matplotlib toolbar
-        toolbar = NavigationToolbar2Tk(canvas, window4)
-        toolbar.update()
-
-        # placing the toolbar on the Tkinter window
-        canvas.get_tk_widget().pack()
-    def LocationPlotBack():
-        window4.destroy()
-        Analysis()
-
-    # the main Tkinter window
-    window4 = Tk()
-
-    # setting the title
-    window4.title('Plotting in Tkinter')
-
-    # dimensions of the main window
-    window4.geometry("1100x740")
-    window4.resizable(False, False)
-
-    # button that displays the plot
-    customtkinter.CTkButton(master=window4, height=2, width=10, text="Browse file 1",command=get_data_frame5).place(x=280,y=0)
-    customtkinter.CTkButton(master=window4, height=2, width=10, text="Browse file 2",command=get_data_frame6).place(x=400,y=0)
-    customtkinter.CTkButton(master=window4, command=plot, height=2, width=10, text="Plot").pack()
-    customtkinter.CTkButton(master=window4, command=LocationPlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
-
-    # run the gui
-    window4.mainloop()
-
-def get_data_frame7():
-    global df_a7
-    global col
-    file_name = askopenfilename()
-    df_a7 = pd.read_csv(file_name)
-    col = list(df_a7)
-    print(col)
-
-def get_data_frame8():
-    global df_a8
-    global col
-    file_name = askopenfilename()
-    df_a8 = pd.read_csv(file_name)
-    col = list(df_a8)
-    print(col)
-
-def GenePlot():
-    root2.destroy()
-    def plot():
-        # the figure that will contain the plot
-        fig = Figure(figsize=(15, 5.75), dpi=100)
-
-        df_a = df_a7
-        df_a.head(2)
-
-        df_v = df_a8
-        df_v.head(2)
-
-        df = pd.merge(df_a, df_v, left_index=True, right_index=True)
-        df.head(2)
-
-        clus = df[(df["Cluster"] == 0) | (df["Cluster"] == 1) | (df["Cluster"] == 2) | (df["Cluster"] == 3)]
-        clus.head(2)
-
-        location_and_cluster = clus.groupby(["Location", "Cluster"])["Cluster"].agg(["count"]).reset_index()
-        location_and_cluster
-
-        genename_and_cluster = clus.groupby(["Gene name", "Cluster"])["Cluster"].agg(["count"]).reset_index()
-        genename_and_cluster
-
-        # adding the subplot
-        plot1 = fig.add_subplot(111)
-
-        # plotting the graph
-        plot1.bar(genename_and_cluster["Gene name"], genename_and_cluster["count"])
-        plot1.set_title('Mutation Clusters based on Gene name')
-        plot1.set_xlabel('Gene name')
-        plot1.set_ylabel('Mutations in each Cluster')
-        plot1.set_xticklabels(genename_and_cluster["Gene name"], rotation=45, fontsize=6)
-        # creating the Tkinter canvas
-        # containing the Matplotlib figure
-        canvas = FigureCanvasTkAgg(fig, master=window5)
-        canvas.draw()
-
-        # placing the canvas on the Tkinter window
-        canvas.get_tk_widget().pack()
-
-        # creating the Matplotlib toolbar
-        toolbar = NavigationToolbar2Tk(canvas, window5)
-        toolbar.update()
-
-        # placing the toolbar on the Tkinter window
-        canvas.get_tk_widget().pack()
-    def GenePlotBack():
-        window5.destroy()
-        Analysis()
-
-    # the main Tkinter window
-    window5 = Tk()
-
-    # setting the title
-    window5.title('Plotting in Tkinter')
-
-    # dimensions of the main window
-    window5.geometry("1100x650")
-    window5.resizable(False, False)
-    # button that displays the plot
-    customtkinter.CTkButton(master=window5, height=2, width=10, text="Browse file 1",command=get_data_frame7).place(x=280,y=0)
-    customtkinter.CTkButton(master=window5, height=2, width=10, text="Browse file 2",command=get_data_frame8).place(x=400,y=0)
-    customtkinter.CTkButton(master=window5, command=plot, height=2, width=10, text="Plot").pack()
-    customtkinter.CTkButton(master=window5, command=GenePlotBack, height=2, width=10, text="Back").place(x=1000,y=0)
-    # run the gui
-    window5.mainloop()
+    Analysis()
 
 def nextwindow():
     win = Tk()
     # Set the geometry of tkinter frame
     win.geometry("700x400")
     win.resizable(False, False)
+    win.title('About')
     # Create a text widget and wrap by words
     text = Text(win, wrap=WORD)
     text.insert(INSERT,"SARS-CoV-2-Dashboard \n \n The rapid spread of the coronavirus disease 2019 (COVID19) pandemic, which was caused by the severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2) coronavirus, has resulted in 95,932,739 confirmed cases. As of January 20, 2021, there had been 2 054 853 cases and 2,054, 853 fatalities. In the twenty-first century, there have been three significant outbreaks of fatal pneumonia this century. SARS-CoV (2002), Middle East, caused by b-coronaviruses MERS-CoV (respiratory syndrome coronavirus) (2012), and SARS-CoV-2 is a virus that causes SARS (2019). Clustering is a Machine Learning Technique that involves the grouping of data points. Given a set of data points, researchers can use a clustering algorithm to classify each data point into a specific group. Creating mutation clusters which depend on certain features of the virus will be easier using clustering algorithms. There is much research conducted regarding mutation clustering (other types of viruses and diseases) following few of them directly regarding SARS CoV-2 mutations. In this research, researchers try to go beyond gene-based clustering of CoV-2 mutations to predict the manner Covid-19 mutates next using analytical techniques.")
@@ -910,6 +864,7 @@ def Cluster():
         def __init__(self, window):
             self.window = window
             self.window.resizable(False, False)
+            self.window.title('Clustered Data')
             customtkinter.CTkButton(window, text="Browse", command=get_data_frame,height=1,width=7).place(x=300,y=0)
             self.button3 = customtkinter.CTkButton(window, text="Plot", command=self.plot,height=1,width=7).pack()
 
