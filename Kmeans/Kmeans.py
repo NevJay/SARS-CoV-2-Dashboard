@@ -40,7 +40,8 @@ plt.xlabel('Gene name')
 plt.ylabel('DNAENC')
 plt.legend()
 plt.show()
-scaler = MinMaxScaler()
+
+#scaler = MinMaxScaler()
 
 # scaler.fit(df[['DNAENC']])
 # df['DNAENC'] = scaler.transform(df[['DNAENC']])
